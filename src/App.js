@@ -4,13 +4,19 @@ import React from 'react';
 import {
     BrowserRouter as Router,
     Route,
-    NavLink
+    NavLink,
+    Redirect
 } from 'react-router-dom'
 import List from "./List"
 import Bets from "./Bets"
 import ShareOverview from "./ShareOverview"
 import { Menu } from 'semantic-ui-react'
+import Login from "./Login";
+import Api from "./Api"
 
+function loggedIn() {
+    return window.localStorage.getItem("loggedIn") === "true";
+}
 
 
 class SemanticNav extends React.Component {
@@ -18,6 +24,32 @@ class SemanticNav extends React.Component {
         return <NavLink {...this.props} exact className="item"  />
     }
 }
+
+const PrivateRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={props => (
+        loggedIn() ? (
+            <Component {...props}/>
+        ) : (
+            <Redirect to={{
+                pathname: '/login',
+                state: { from: props.location }
+            }}/>
+        )
+    )}/>
+)
+
+class Logout extends React.Component{
+    componentDidMount() {
+        Api.logout().then(() => {
+            window.localStorage.clear();
+            this.props.history.push("/")
+        })
+    }
+
+    render () {
+        return <div>Logging out...</div>
+    }
+};
 
 const App = () => (
     <Router>
@@ -30,9 +62,11 @@ const App = () => (
             </Menu>
 
             <main>
-                <Route exact path="/" component={List} />
-                <Route exact path="/bets" component={Bets} />
-                <Route exact path="/share/:id" component={ShareOverview} />
+                <Route exact path="/login" component={Login} />
+                <PrivateRoute exact path="/" component={List} />
+                <PrivateRoute exact path="/bets" component={Bets} />
+                <PrivateRoute exact path="/share/:id" component={ShareOverview} />
+                <PrivateRoute exact path="/logout" component={Logout} />
             </main>
         </div>
     </Router>
