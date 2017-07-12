@@ -65,5 +65,11 @@ const logout = () => {
         .then(res => res.json())
 };
 
+const getShare = (id) => {
+    return fetchAuthenticated(`http://localhost:5000/api/v1/shares/${id}`)
+        .then(res => res.json())
+        .then(json => json.share)
+}
 
-export default {getShares, getStations, updateShare, login, logout}
+
+export default {getShares, getStations, updateShare, login, logout, getShare}

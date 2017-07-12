@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Table, Header, Button } from "semantic-ui-react";
 import moment from "moment";
 import PropTypes from "prop-types";
+import Api from "./Api"
 
 
 class Deposit extends Component {
@@ -42,10 +43,8 @@ class ShareOverview extends Component {
     }
 
     componentDidMount() {
-        fetch(`http://localhost:5000/api/v1/shares/${this.props.match.params.id}`)
-            .then(res => {
-                return res.json();
-            }).then(json => {this.setState({ share: json.share })
+        Api.getShare(this.props.match.params.id)
+            .then(share => {this.setState({ share })
         });
     }
 
