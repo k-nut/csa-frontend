@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Table, Header, Button } from "semantic-ui-react";
+import { Table, Header, Button, Input } from "semantic-ui-react";
 import moment from "moment";
 import PropTypes from "prop-types";
 import Api from "./Api"
+import {debounce} from "lodash";
 
 
 class Deposit extends Component {
@@ -48,6 +49,15 @@ class ShareOverview extends Component {
         });
     }
 
+    updateEmail = (_, v) => {
+        const share  = this.state.share;
+        share.email = v.value;
+        this.setState({share: share});
+        this.sendUpdate(share);
+    };
+
+    sendUpdate = debounce(share => {Api.updateShare(share)}, 500);
+
     render() {
         const deposits = this.state.share.deposits
             .map(deposit => {
@@ -56,6 +66,7 @@ class ShareOverview extends Component {
         return (
             <div>
                 <Header> {this.state.share.name} </Header>
+                <Input label="E=Mail" value={this.state.share.email} onChange={this.updateEmail} />
                 <Table celled>
                     <Table.Header>
                         <Table.Row>
