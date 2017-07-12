@@ -67,6 +67,7 @@ class Bets extends Component {
                     <Table.Header className="stickytable">
                         <Table.Row>
                             <Table.HeaderCell> Name </Table.HeaderCell>
+                            <Table.HeaderCell> Notiz </Table.HeaderCell>
                             <Table.HeaderCell> Abholstelle </Table.HeaderCell>
                             <Table.HeaderCell> Gebot </Table.HeaderCell>
                             <Table.HeaderCell> Startmonat </Table.HeaderCell>
@@ -93,6 +94,9 @@ function Bet(props) {
 
     const changeBet = _.debounce((_, v) => { props.changeMonth(props.share, "bet_value", v.value)}, 500);
 
+    const changeNote = _.debounce((_, v) => { props.changeMonth(props.share, "note", v.value)}, 500);
+
+
     const changeStation = (_, values) => {
         props.changeMonth(props.share, "station_id", values.value)
     };
@@ -109,6 +113,9 @@ function Bet(props) {
                 <Link to={`/share/${props.share.id}`}>
                     {props.share.name}
                 </Link>
+            </Table.Cell>
+            <Table.Cell>
+                <Input defaultValue={props.share.note} onChange={changeNote} />
             </Table.Cell>
             <Table.Cell>
                 <Dropdown selection
