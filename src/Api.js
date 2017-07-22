@@ -1,3 +1,5 @@
+const BASE_URL = process.env.REACT_APP_API || 'http://localhost:5000/api/v1';
+
 const fetchAuthenticated = (url, params) => {
     return fetch(url, { ...{
         method: 'GET',
@@ -11,13 +13,13 @@ const fetchAuthenticated = (url, params) => {
 };
 
 const getShares = () => {
-    return fetchAuthenticated(`http://localhost:5000/api/v1/shares`)
+    return fetchAuthenticated(`${BASE_URL}/shares`)
         .then(res => res.json())
         .then(json => json.shares)
 };
 
 const updateShare = (share) => {
-    return fetchAuthenticated(`http://localhost:5000/api/v1/shares/${share.id}`,
+    return fetchAuthenticated(`${BASE_URL}/shares/${share.id}`,
         {
             method: 'post',
             body: JSON.stringify(share),
@@ -32,13 +34,13 @@ const updateShare = (share) => {
 };
 
 const getStations = () => {
-    return fetchAuthenticated(`http://localhost:5000/api/v1/stations`)
+    return fetchAuthenticated(`${BASE_URL}/stations`)
         .then(res => res.json())
         .then(json => json.stations);
 };
 
 const login = (email, password) => {
-    return fetchAuthenticated(`http://localhost:5000/api/v1/login`,
+    return fetchAuthenticated(`${BASE_URL}/login`,
         {
             method: 'post',
             body: JSON.stringify({email, password}),
@@ -52,7 +54,7 @@ const login = (email, password) => {
 };
 
 const logout = () => {
-    return fetchAuthenticated(`http://localhost:5000/api/v1/logout`,
+    return fetchAuthenticated(`${BASE_URL}/logout`,
         {
             method: 'GET',
             headers: {
@@ -66,7 +68,7 @@ const logout = () => {
 };
 
 const getShare = (id) => {
-    return fetchAuthenticated(`http://localhost:5000/api/v1/shares/${id}`)
+    return fetchAuthenticated(`${BASE_URL}/shares/${id}`)
         .then(res => res.json())
         .then(json => json.share)
 }
