@@ -50,7 +50,12 @@ const login = (email, password) => {
             },
         }
     )
-        .then(res => res.json())
+        .then(res => {
+            if (res.status !== 200){
+                throw new Error('Login failed');
+            }
+            return res.json()
+        })
 };
 
 const logout = () => {
