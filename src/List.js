@@ -35,6 +35,7 @@ class List extends Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.setFilterProblems = this.setFilterProblems.bind(this);
+        this.showArchived = this.showArchived.bind(this);
     }
 
     handleChange(event) {
@@ -43,6 +44,10 @@ class List extends Component {
 
     setFilterProblems(event, data) {
         this.setState({filterProblems: data.checked})
+    }
+
+    showArchived(event, data) {
+        this.setState({showArchived: data.checked})
     }
 
     componentDidMount() {
@@ -66,6 +71,12 @@ class List extends Component {
                 }
                 return true;
             })
+            .filter(share => {
+                if (!this.state.showArchived){
+                    return !share.archived;
+                }
+                return true;
+            })
             .sortBy(["station_name", "name"])
             .map(share => {
                 return <Share share={share} key={share.name}/>
@@ -75,6 +86,7 @@ class List extends Component {
             <div>
                 <Input value={this.state.nameFilter} onChange={this.handleChange} placeholder="Filter..."/>
                 <Checkbox checked={this.state.filterProblems} onChange={this.setFilterProblems} label="Nur Fehlbeträge zeigen" />
+                <Checkbox checked={this.state.showArchived} onChange={this.showArchived} label="Archivierte anzeigen" />
                 <Table celled>
                     <Table.Header className="stickytable">
                         <Table.Row>

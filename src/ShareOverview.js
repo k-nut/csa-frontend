@@ -9,7 +9,6 @@ import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 
 
-
 class Deposit extends Component {
 
     changeSecurity = (_, data) => {
@@ -152,6 +151,13 @@ class ShareOverview extends Component {
             });
     }
 
+    archive = () => {
+        Api.updateShare({id: this.state.share.id, archived: !this.state.share.archived}).then(() => {
+            this.props.history.push("/")
+        })
+    }
+
+
     sendUpdate = debounce(share => {Api.updateShare(share)}, 500);
 
     render() {
@@ -163,7 +169,10 @@ class ShareOverview extends Component {
         return (
             <div>
                 <Header> {this.state.share.name} </Header>
-                <Input label="E=Mail" value={this.state.share.email} onChange={this.updateEmail} />
+                <Input label="E=Mail" value={this.state.share.email || ""} onChange={this.updateEmail} />
+                <Button onClick={this.archive}
+                        icon={this.state.share.archived  ? 'repeat': 'trash'}
+                        content={this.state.share.archived ? 'Wiederherstellen': 'Archivieren'}/>
                 <Table celled>
                     <Table.Header>
                         <Table.Row>
