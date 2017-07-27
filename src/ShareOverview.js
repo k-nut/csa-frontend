@@ -169,10 +169,12 @@ class ShareOverview extends Component {
         return (
             <div>
                 <Header> {this.state.share.name} </Header>
-                <Input label="E=Mail" value={this.state.share.email || ""} onChange={this.updateEmail} />
-                <Button onClick={this.archive}
-                        icon={this.state.share.archived  ? 'repeat': 'trash'}
-                        content={this.state.share.archived ? 'Wiederherstellen': 'Archivieren'}/>
+                <div className="spaced">
+                    <Input label="E=Mail" value={this.state.share.email || ""} onChange={this.updateEmail} />
+                    <Button onClick={this.archive}
+                            icon={this.state.share.archived  ? 'repeat': 'trash'}
+                            content={this.state.share.archived ? 'Wiederherstellen': 'Archivieren'}/>
+                </div>
                 <Table celled>
                     <Table.Header>
                         <Table.Row>

@@ -84,9 +84,11 @@ class List extends Component {
             .value();
         return (
             <div>
-                <Input value={this.state.nameFilter} onChange={this.handleChange} placeholder="Filter..."/>
-                <Checkbox checked={this.state.filterProblems} onChange={this.setFilterProblems} label="Nur Fehlbeträge zeigen" />
-                <Checkbox checked={this.state.showArchived} onChange={this.showArchived} label="Archivierte anzeigen" />
+                <div className="spaced">
+                    <Input value={this.state.nameFilter} onChange={this.handleChange} placeholder="Filter..."/>
+                    <Checkbox checked={this.state.filterProblems} onChange={this.setFilterProblems} label="Nur Fehlbeträge zeigen" />
+                    <Checkbox checked={this.state.showArchived} onChange={this.showArchived} label="Archivierte anzeigen" />
+                </div>
                 <Table celled>
                     <Table.Header className="stickytable">
                         <Table.Row>
