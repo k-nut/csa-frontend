@@ -23,10 +23,6 @@ const updateShare = (share) => {
         {
             method: 'post',
             body: JSON.stringify(share),
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
-            },
         }
     )
         .then(res => res.json())
@@ -44,10 +40,6 @@ const login = (email, password) => {
         {
             method: 'post',
             body: JSON.stringify({email, password}),
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
-            },
         }
     )
         .then(res => {
@@ -59,16 +51,7 @@ const login = (email, password) => {
 };
 
 const logout = () => {
-    return fetchAuthenticated(`${BASE_URL}/logout`,
-        {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Cache': 'no-cache'
-            },
-            credentials: 'include'
-        })
+    return fetchAuthenticated(`${BASE_URL}/logout`)
         .then(res => res.json())
 };
 
