@@ -1,23 +1,37 @@
 import React, { Component } from 'react';
-import { Table, Header, Button, Input } from "semantic-ui-react";
+import { Table, Header, Input, Checkbox } from "semantic-ui-react";
 import moment from "moment";
 import PropTypes from "prop-types";
 import Api from "./Api"
-import {debounce} from "lodash";
+import {debounce, find} from "lodash";
+import "./ShareOverview.css";
 
 
 class Deposit extends Component {
+
+    changeSecurity = (_, data) => {
+        this.props.changeFunction(this.props.deposit, 'is_security', data.checked)
+    };
+
+    changeIgnore = (_, data) => {
+        this.props.changeFunction(this.props.deposit, 'ignore', data.checked)
+    };
+
     render() {
         const deposit = this.props.deposit;
-        const button = (<Button> {deposit.ignore ? "Einbeziehen" : "Ignorieren"} </Button>)
+        const ignore = (<Checkbox checked={deposit.ignore} onChange={this.changeIgnore}> </Checkbox>)
+        const security = (<Checkbox checked={deposit.is_security} onChange={this.changeSecurity}> </Checkbox>)
         return (
-        <Table.Row className={deposit.ignore && 'ignored' }>
+        <Table.Row className={(deposit.ignore || deposit.is_security) && 'ignored' }>
             <Table.Cell> {moment(deposit.timestamp).format("DD.MM.YYYY")} </Table.Cell>
             <Table.Cell> {deposit.amount} </Table.Cell>
             <Table.Cell> {deposit.title} </Table.Cell>
             <Table.Cell> {deposit.person_id} </Table.Cell>
             <Table.Cell>
-                {button}
+                {ignore}
+            </Table.Cell>
+            <Table.Cell>
+                {security}
             </Table.Cell>
         </Table.Row>
         )
@@ -30,8 +44,10 @@ Deposit.propTypes = {
         amount: PropTypes.number.isRequired,
         title: PropTypes.string.isRequired,
         person_id: PropTypes.number.isRequired,
-        ignore: PropTypes.bool.isRequired,
-    })
+        ignore: PropTypes.bool,
+        is_security: PropTypes.bool,
+    }),
+    changeFunction: PropTypes.func
 }
 
 class ShareOverview extends Component {
@@ -56,12 +72,20 @@ class ShareOverview extends Component {
         this.sendUpdate(share);
     };
 
+    changeDeposit  = (deposit, property, value) => {
+        console.log(property, value)
+        const selectedDeposit  = find(this.state.share.deposits, deposit);
+        selectedDeposit[property] = value;
+        this.setState({share: this.state.share});
+        Api.updateDeposit(selectedDeposit)
+    }
+
     sendUpdate = debounce(share => {Api.updateShare(share)}, 500);
 
     render() {
         const deposits = this.state.share.deposits
             .map(deposit => {
-                return <Deposit deposit={deposit} key={deposit.id}/>
+                return <Deposit deposit={deposit} key={deposit.id} changeFunction={this.changeDeposit}/>
             });
         return (
             <div>
@@ -75,6 +99,7 @@ class ShareOverview extends Component {
                             <Table.HeaderCell> Titel </Table.HeaderCell>
                             <Table.HeaderCell> Überweiser </Table.HeaderCell>
                             <Table.HeaderCell> Ignorieren </Table.HeaderCell>
+                            <Table.HeaderCell> Kaution </Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>

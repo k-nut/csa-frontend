@@ -29,6 +29,17 @@ const updateShare = (share) => {
         .then(json => json.share)
 };
 
+const updateDeposit = (share) => {
+    return fetchAuthenticated(`${BASE_URL}/deposits/${share.id}`,
+        {
+            method: 'post',
+            body: JSON.stringify(share),
+        }
+    )
+        .then(res => res.json())
+        .then(json => json.share)
+};
+
 const getStations = () => {
     return fetchAuthenticated(`${BASE_URL}/stations`)
         .then(res => res.json())
@@ -62,4 +73,4 @@ const getShare = (id) => {
 }
 
 
-export default {getShares, getStations, updateShare, login, logout, getShare}
+export default {getShares, getStations, updateShare, login, logout, getShare, updateDeposit}
