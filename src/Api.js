@@ -29,15 +29,26 @@ const updateShare = (share) => {
         .then(json => json.share)
 };
 
-const updateDeposit = (share) => {
-    return fetchAuthenticated(`${BASE_URL}/deposits/${share.id}`,
+const updateDeposit = (deposit) => {
+    return fetchAuthenticated(`${BASE_URL}/deposits/${deposit.id}`,
         {
             method: 'post',
-            body: JSON.stringify(share),
+            body: JSON.stringify(deposit),
         }
     )
         .then(res => res.json())
-        .then(json => json.share)
+        .then(json => json.deposit)
+};
+
+const addDeposit = (deposit) => {
+    return fetchAuthenticated(`${BASE_URL}/deposits/`,
+        {
+            method: 'put',
+            body: JSON.stringify(deposit),
+        }
+    )
+        .then(res => res.json())
+        .then(json => json.deposit)
 };
 
 const getStations = () => {
@@ -73,4 +84,4 @@ const getShare = (id) => {
 }
 
 
-export default {getShares, getStations, updateShare, login, logout, getShare, updateDeposit}
+export default {getShares, getStations, updateShare, login, logout, getShare, updateDeposit, addDeposit}
