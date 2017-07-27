@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import _ from "lodash";
-import {Table, Input} from "semantic-ui-react";
+import {Table, Input, Checkbox} from "semantic-ui-react";
 import Api from "./Api";
 import { Link } from "react-router-dom"
 
@@ -30,13 +30,19 @@ class List extends Component {
         this.state = {
             shares: [],
             nameFilter: "",
+            filterProblems: false,
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.setFilterProblems = this.setFilterProblems.bind(this);
     }
 
     handleChange(event) {
         this.setState({nameFilter: event.target.value});
+    }
+
+    setFilterProblems(event, data) {
+        this.setState({filterProblems: data.checked})
     }
 
     componentDidMount() {
@@ -54,6 +60,12 @@ class List extends Component {
                 const stationMatches = _.includes(share.station_name.toLowerCase(), term);
                 return nameMatches || stationMatches;
             })
+            .filter(share => {
+                if (this.state.filterProblems){
+                    return share.difference_today < 0;
+                }
+                return true;
+            })
             .sortBy(["station_name", "name"])
             .map(share => {
                 return <Share share={share} key={share.name}/>
@@ -62,6 +74,7 @@ class List extends Component {
         return (
             <div>
                 <Input value={this.state.nameFilter} onChange={this.handleChange} placeholder="Filter..."/>
+                <Checkbox checked={this.state.filterProblems} onChange={this.setFilterProblems} label="Nur Fehlbeträge zeigen" />
                 <Table celled>
                     <Table.Header className="stickytable">
                         <Table.Row>
