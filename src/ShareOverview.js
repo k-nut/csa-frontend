@@ -9,6 +9,27 @@ import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 
 
+class Person extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {name: null}
+    }
+
+    componentDidMount() {
+        Api.getPerson(this.props.personId).then(person => {
+            this.setState({name: person.name})
+        });
+    }
+
+    render () {
+        return (<div> {this.state.name} </div>)
+    }
+}
+
+Person.propTypes = {
+    personId: PropTypes.number,
+}
+
 class Deposit extends Component {
 
     changeSecurity = (_, data) => {
@@ -28,7 +49,7 @@ class Deposit extends Component {
                 <Table.Cell> {moment(deposit.timestamp).format("DD.MM.YYYY")} </Table.Cell>
                 <Table.Cell> {deposit.amount} </Table.Cell>
                 <Table.Cell> {deposit.title} </Table.Cell>
-                <Table.Cell> {deposit.person_id} </Table.Cell>
+                <Table.Cell> <Person personId={deposit.person_id} /> </Table.Cell>
                 <Table.Cell>
                     {ignore}
                 </Table.Cell>

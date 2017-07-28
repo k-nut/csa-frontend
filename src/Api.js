@@ -85,6 +85,11 @@ const getShare = (id) => {
         .then(json => json.share)
 }
 
+const getPerson = (id) => {
+    return fetchAuthenticated(`${BASE_URL}/person/${id}`)
+        .then(res => res.json())
+}
+
 const mergeShares = (share1, share2) => {
     return fetchAuthenticated(`${BASE_URL}/shares/merge`, {
             method: 'post',
@@ -108,6 +113,7 @@ const uploadFile = (file) => {
 export default {
     getShares,
     getStations,
+    getPerson,
     updateShare,
     login,
     logout,
