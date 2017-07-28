@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Table, Header, Input, Checkbox, Button } from "semantic-ui-react";
+import React, {Component} from 'react';
+import {Table, Header, Input, Checkbox, Button, Dropdown} from "semantic-ui-react";
 import moment from "moment";
 import PropTypes from "prop-types";
 import Api from "./Api"
@@ -24,18 +24,18 @@ class Deposit extends Component {
         const ignore = (<Checkbox checked={deposit.ignore} onChange={this.changeIgnore}> </Checkbox>)
         const security = (<Checkbox checked={deposit.is_security} onChange={this.changeSecurity}> </Checkbox>)
         return (
-        <Table.Row className={(deposit.ignore || deposit.is_security) ? 'ignored': "" }>
-            <Table.Cell> {moment(deposit.timestamp).format("DD.MM.YYYY")} </Table.Cell>
-            <Table.Cell> {deposit.amount} </Table.Cell>
-            <Table.Cell> {deposit.title} </Table.Cell>
-            <Table.Cell> {deposit.person_id} </Table.Cell>
-            <Table.Cell>
-                {ignore}
-            </Table.Cell>
-            <Table.Cell>
-                {security}
-            </Table.Cell>
-        </Table.Row>
+            <Table.Row className={(deposit.ignore || deposit.is_security) ? 'ignored' : ""}>
+                <Table.Cell> {moment(deposit.timestamp).format("DD.MM.YYYY")} </Table.Cell>
+                <Table.Cell> {deposit.amount} </Table.Cell>
+                <Table.Cell> {deposit.title} </Table.Cell>
+                <Table.Cell> {deposit.person_id} </Table.Cell>
+                <Table.Cell>
+                    {ignore}
+                </Table.Cell>
+                <Table.Cell>
+                    {security}
+                </Table.Cell>
+            </Table.Row>
         )
     }
 }
@@ -95,7 +95,7 @@ class EditDeposit extends Component {
                     <DatePicker
                         dateFormat="DD.MM.YYYY"
                         selected={this.state.timestamp}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}/>
                 </Table.Cell>
                 <Table.Cell>
                     <Input value={this.state.amount} onChange={this.handleInputChange} type="number" name="amount"/>
@@ -108,7 +108,8 @@ class EditDeposit extends Component {
                     <Checkbox checked={this.state.ignore} onChange={this.handleInputChange} name="ignore"> </Checkbox>
                 </Table.Cell>
                 <Table.Cell>
-                    <Checkbox checked={this.state.is_security} onChange={this.handleInputChange} name="is_security"> </Checkbox>
+                    <Checkbox checked={this.state.is_security} onChange={this.handleInputChange}
+                              name="is_security"> </Checkbox>
                     <Button onClick={this.submit} disabled={disableButton}>Hinzufügen</Button>
                 </Table.Cell>
             </Table.Row>
@@ -116,30 +117,90 @@ class EditDeposit extends Component {
     }
 }
 
+class MergeShare extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            sharesList: [],
+            selectedShare: null
+        }
+
+        this.changShare = this.changShare.bind(this);
+        this.mergeItems = this.mergeItems.bind(this);
+    }
+
+    componentDidMount() {
+        Api.getShares().then(shares => {
+            const sharesList = shares
+                .filter(share => share.id !== this.props.originalShare)
+                .map(share => {
+                    console.log(share.id, this.props.originalShare)
+                    return {
+                        value: share.id,
+                        text: share.name,
+                    }
+                });
+            this.setState({sharesList})
+        });
+    }
+
+    changShare(_, data) {
+        this.setState({selectedShare: data.value})
+    }
+
+    mergeItems(_, data) {
+        Api.mergeShares(this.props.originalShare, this.state.selectedShare);
+        this.props.history.push("/")
+        // console.log(this.props.originalShare, this.state.selectedShare)
+    }
+
+    render() {
+        return (
+            <div>
+                <Dropdown selection
+                          value={this.state.selectedShare}
+                          onChange={this.changShare}
+                          options={this.state.sharesList}/>
+                <Button onClick={this.mergeItems}
+                        disabled={!this.state.selectedShare}
+                        content="Zusammenführen"/>
+            </div>
+        )
+    }
+
+}
+
+MergeShare.propTypes = {
+    originalShare: PropTypes.number,
+    history: PropTypes.object,
+}
+
 class ShareOverview extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            share: { deposits : []},
+            share: {deposits: []},
         };
     }
 
     componentDidMount() {
         Api.getShare(this.props.match.params.id)
-            .then(share => {this.setState({ share })
-        });
+            .then(share => {
+                this.setState({share})
+            });
     }
 
     updateEmail = (_, v) => {
-        const share  = this.state.share;
+        const share = this.state.share;
         share.email = v.value;
         this.setState({share: share});
         this.sendUpdate(share);
     };
 
-    changeDeposit  = (deposit, property, value) => {
-        const selectedDeposit  = find(this.state.share.deposits, deposit);
+    changeDeposit = (deposit, property, value) => {
+        const selectedDeposit = find(this.state.share.deposits, deposit);
         selectedDeposit[property] = value;
         this.setState({share: this.state.share});
         Api.updateDeposit(selectedDeposit)
@@ -147,7 +208,8 @@ class ShareOverview extends Component {
 
     reloadDeposits = () => {
         Api.getShare(this.props.match.params.id)
-            .then(share => {this.setState({ share })
+            .then(share => {
+                this.setState({share})
             });
     }
 
@@ -158,7 +220,9 @@ class ShareOverview extends Component {
     }
 
 
-    sendUpdate = debounce(share => {Api.updateShare(share)}, 500);
+    sendUpdate = debounce(share => {
+        Api.updateShare(share)
+    }, 500);
 
     render() {
         const deposits = sortBy(this.state.share.deposits, "timestamp")
@@ -170,10 +234,10 @@ class ShareOverview extends Component {
             <div>
                 <Header> {this.state.share.name} </Header>
                 <div className="spaced">
-                    <Input label="E=Mail" value={this.state.share.email || ""} onChange={this.updateEmail} />
+                    <Input label="E=Mail" value={this.state.share.email || ""} onChange={this.updateEmail}/>
                     <Button onClick={this.archive}
-                            icon={this.state.share.archived  ? 'repeat': 'trash'}
-                            content={this.state.share.archived ? 'Wiederherstellen': 'Archivieren'}/>
+                            icon={this.state.share.archived ? 'repeat' : 'trash'}
+                            content={this.state.share.archived ? 'Wiederherstellen' : 'Archivieren'}/>
                 </div>
                 <Table celled>
                     <Table.Header>
@@ -191,16 +255,22 @@ class ShareOverview extends Component {
                     </Table.Body>
                     {this.state.share.deposits.length && (
                         <Table.Footer>
-                           <EditDeposit personId={this.state.share.deposits[0].person_id}
-                                        updateFunction={this.reloadDeposits}/>
+                            <EditDeposit personId={this.state.share.deposits[0].person_id}
+                                         updateFunction={this.reloadDeposits}/>
                         </Table.Footer>
                     )}
                 </Table>
+
+                {this.state.share.id && <div>
+                    <Header>Mit anderem Anteil zusammenführen</Header>
+                    <MergeShare originalShare={this.state.share.id} history={this.props.history}/>
+                </div>
+                }
+
             </div>
         );
     }
 }
-
 
 
 export default ShareOverview;

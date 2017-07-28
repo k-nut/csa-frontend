@@ -1,14 +1,16 @@
 const BASE_URL = process.env.REACT_APP_API || 'http://localhost:5000/api/v1';
 
 const fetchAuthenticated = (url, params) => {
-    return fetch(url, { ...{
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Cache': 'no-cache'
-        }, ...params},
+    return fetch(url, {
+        ...{
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Cache': 'no-cache'
+            }, ...params
+        },
     })
 };
 
@@ -65,7 +67,7 @@ const login = (email, password) => {
         }
     )
         .then(res => {
-            if (res.status !== 200){
+            if (res.status !== 200) {
                 throw new Error('Login failed');
             }
             return res.json()
@@ -83,5 +85,13 @@ const getShare = (id) => {
         .then(json => json.share)
 }
 
+const mergeShares = (share1, share2) => {
+    return fetchAuthenticated(`${BASE_URL}/shares/merge`, {
+            method: 'post',
+            body: JSON.stringify({share1, share2}),
+        }
+    ).then(res => res.json())
+}
 
-export default {getShares, getStations, updateShare, login, logout, getShare, updateDeposit, addDeposit}
+
+export default {getShares, getStations, updateShare, login, logout, getShare, updateDeposit, addDeposit, mergeShares}
