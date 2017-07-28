@@ -93,5 +93,27 @@ const mergeShares = (share1, share2) => {
     ).then(res => res.json())
 }
 
+const uploadFile = (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return fetchAuthenticated(`${BASE_URL}/deposits/upload`, {
+            method: 'post',
+            body: formData,
+            headers: {},
+        }
+    ).then(res => res.json())
+}
 
-export default {getShares, getStations, updateShare, login, logout, getShare, updateDeposit, addDeposit, mergeShares}
+
+export default {
+    getShares,
+    getStations,
+    updateShare,
+    login,
+    logout,
+    getShare,
+    updateDeposit,
+    addDeposit,
+    mergeShares,
+    uploadFile
+}

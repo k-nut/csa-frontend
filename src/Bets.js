@@ -49,7 +49,7 @@ class Bets extends Component {
             .filter(share => {
                 const term = this.state.nameFilter.toLowerCase();
                 const nameMatches = _.includes(share.name.toLowerCase(), term);
-                const stationMatches = _.includes(share.station_name.toLowerCase(), term);
+                const stationMatches = !share.station_name || _.includes(share.station_name.toLowerCase(), term);
                 return nameMatches || stationMatches;
             })
             .sortBy(["station_name", "name"])

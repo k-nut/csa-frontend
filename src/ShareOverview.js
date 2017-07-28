@@ -72,7 +72,6 @@ class EditDeposit extends Component {
         const deposit = this.state;
         deposit.timestamp = moment(deposit.timestamp).format("YYYY-MM-DD");
         Api.addDeposit(deposit)
-        console.log('done')
         this.state = {timestamp: moment()}
         this.props.updateFunction()
     };
@@ -135,7 +134,6 @@ class MergeShare extends Component {
             const sharesList = shares
                 .filter(share => share.id !== this.props.originalShare)
                 .map(share => {
-                    console.log(share.id, this.props.originalShare)
                     return {
                         value: share.id,
                         text: share.name,

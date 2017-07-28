@@ -13,6 +13,7 @@ import ShareOverview from "./ShareOverview"
 import { Menu } from 'semantic-ui-react'
 import Login from "./Login";
 import Api from "./Api"
+import Upload from "./Upload"
 
 function loggedIn() {
     return window.localStorage.getItem("loggedIn") === "true";
@@ -66,6 +67,7 @@ const App = () => (
                 <PrivateRoute exact path="/" component={List} />
                 <PrivateRoute exact path="/bets" component={Bets} />
                 <PrivateRoute exact path="/share/:id" component={ShareOverview} />
+                <PrivateRoute exact path="/upload" component={Upload} />
                 <PrivateRoute exact path="/logout" component={Logout} />
             </main>
         </div>

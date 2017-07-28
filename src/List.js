@@ -59,6 +59,7 @@ class List extends Component {
     render() {
         const shares = _.chain(this.state.shares)
             .filter(share => {
+                if (!this.state.nameFilter) { return true }
                 if (!share.name || !share.station_name){ return false }
                 const term = this.state.nameFilter.toLowerCase();
                 const nameMatches = _.includes(share.name.toLowerCase(), term);
