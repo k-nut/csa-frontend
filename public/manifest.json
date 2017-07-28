@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Solawi Kontoverwaltung",
+  "name": "Kontoverwaltung der Solawi Waldgarten",
   "icons": [
     {
       "src": "favicon.ico",
