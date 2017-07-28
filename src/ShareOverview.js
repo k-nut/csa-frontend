@@ -7,6 +7,7 @@ import {debounce, find, sortBy} from "lodash";
 import "./ShareOverview.css";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
+import * as Email from "./Email";
 
 
 class Person extends Component {
@@ -238,6 +239,14 @@ class ShareOverview extends Component {
         })
     }
 
+    sendDifference = () => {
+        window.location.href = Email.getDifferenceText(this.state.share);
+    };
+
+    sendMissing = () => {
+        window.location.href =  Email.getMissingText(this.state.share);
+    };
+
 
     sendUpdate = debounce(share => {
         Api.updateShare(share)
@@ -285,6 +294,22 @@ class ShareOverview extends Component {
                     <MergeShare originalShare={this.state.share.id} history={this.props.history}/>
                 </div>
                 }
+
+                <Header> E-Mails </Header>
+
+                { !this.state.share.email ?
+                    <div> Wenn du oben eine E-Mail Adresse hinzufügst kannst du hier vorformulierte E-Mails senden</div>
+                    : <div>
+                        <Button content="Unstimmigkeit"
+                        onClick={this.sendDifference}
+                        icon="mail"/>
+
+                        <Button content="Fehlender Beitrag"
+                        onClick={this.sendMissing}
+                        icon="mail"/>
+                    </div>
+                }
+
 
             </div>
         );
