@@ -149,10 +149,10 @@ class MergeShare extends Component {
         this.setState({selectedShare: data.value})
     }
 
-    mergeItems(_, data) {
-        Api.mergeShares(this.props.originalShare, this.state.selectedShare);
-        this.props.history.push("/")
-        // console.log(this.props.originalShare, this.state.selectedShare)
+    mergeItems() {
+        Api.mergeShares(this.props.originalShare, this.state.selectedShare).then(() => {
+            this.props.history.push("/")
+        });
     }
 
     render() {
