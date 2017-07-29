@@ -5,6 +5,7 @@ const fetchAuthenticated = (url, params) => {
         ...{
             method: 'GET',
             credentials: 'include',
+            mode: 'cors',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
