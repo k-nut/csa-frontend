@@ -52,7 +52,7 @@ class Bets extends Component {
                 const stationMatches = !share.station_name || _.includes(share.station_name.toLowerCase(), term);
                 return nameMatches || stationMatches;
             })
-            .sortBy(["station_name", "name"])
+            .sortBy(["station_id", "name"])
             .map(share => {
                 return <Bet share={share}
                             stations={this.state.stations}
