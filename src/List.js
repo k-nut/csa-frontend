@@ -51,7 +51,7 @@ class List extends Component {
     }
 
     componentDidMount() {
-        Api.getShares().then(shares => {
+        Api.getSharesPayments().then(shares => {
             this.setState({shares})
         });
     }
