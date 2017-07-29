@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import _ from "lodash";
-import {Table, Input, Checkbox} from "semantic-ui-react";
+import {Table, Input, Checkbox, Loader} from "semantic-ui-react";
 import Api from "./Api";
 import { Link } from "react-router-dom"
 
@@ -101,9 +101,12 @@ class List extends Component {
                             <Table.HeaderCell> Differenz </Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
-                    <Table.Body>
-                        {shares}
-                    </Table.Body>
+                    {this.state.shares.length ?
+                        <Table.Body>
+                            {shares}
+                        </Table.Body> :
+                            <Loader active inline='centered'/>
+                    }
                 </Table>
             </div>
         );

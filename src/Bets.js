@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import _ from "lodash";
-import {Input, Table, Dropdown} from "semantic-ui-react";
+import {Input, Table, Dropdown, Loader} from "semantic-ui-react";
 import moment from "moment";
 import {Link} from "react-router-dom";
 import "toastr/build/toastr.css"
@@ -73,9 +73,12 @@ class Bets extends Component {
                             <Table.HeaderCell> Startmonat </Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
-                    <Table.Body>
-                        {shares}
-                    </Table.Body>
+                    {this.state.shares.length ?
+                        <Table.Body>
+                            {shares}
+                        </Table.Body> :
+                        <Loader active inline='centered'/>
+                    }
                 </Table>
             </div>
         );
