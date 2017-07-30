@@ -9,28 +9,6 @@ import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import * as Email from "./Email";
 
-
-class Person extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {name: null}
-    }
-
-    componentDidMount() {
-        Api.getPerson(this.props.personId).then(person => {
-            this.setState({name: person.name})
-        });
-    }
-
-    render () {
-        return (<div> {this.state.name} </div>)
-    }
-}
-
-Person.propTypes = {
-    personId: PropTypes.number,
-}
-
 class Deposit extends Component {
 
     changeSecurity = (_, data) => {
@@ -50,7 +28,7 @@ class Deposit extends Component {
                 <Table.Cell> {moment(deposit.timestamp).format("DD.MM.YYYY")} </Table.Cell>
                 <Table.Cell> {deposit.amount} </Table.Cell>
                 <Table.Cell> {deposit.title} </Table.Cell>
-                <Table.Cell> <Person personId={deposit.person_id} /> </Table.Cell>
+                <Table.Cell> {deposit.person_name} </Table.Cell>
                 <Table.Cell>
                     {ignore}
                 </Table.Cell>
@@ -70,6 +48,7 @@ Deposit.propTypes = {
         person_id: PropTypes.number.isRequired,
         ignore: PropTypes.bool,
         is_security: PropTypes.bool,
+        person_name: PropTypes.string,
     }),
     changeFunction: PropTypes.func
 }
@@ -124,7 +103,7 @@ class EditDeposit extends Component {
                 <Table.Cell>
                     <Input value={this.state.title} onChange={this.handleInputChange} name="title"/>
                 </Table.Cell>
-                <Table.Cell> {this.props.personId} </Table.Cell>
+                <Table.Cell> {this.props.personName} </Table.Cell>
                 <Table.Cell>
                     <Checkbox checked={this.state.ignore} onChange={this.handleInputChange} name="ignore"> </Checkbox>
                 </Table.Cell>
@@ -201,7 +180,8 @@ class ShareOverview extends Component {
         super(props);
 
         this.state = {
-            share: {deposits: []},
+            share: {},
+            deposits: []
         };
     }
 
@@ -209,6 +189,10 @@ class ShareOverview extends Component {
         Api.getShare(this.props.match.params.id)
             .then(share => {
                 this.setState({share})
+            });
+        Api.getShareDeposits(this.props.match.params.id)
+            .then(deposits => {
+                this.setState({deposits})
             });
     }
 
@@ -253,7 +237,7 @@ class ShareOverview extends Component {
     }, 500);
 
     render() {
-        const deposits = sortBy(this.state.share.deposits, "timestamp")
+        const deposits = sortBy(this.state.deposits, "timestamp")
             .reverse()
             .map(deposit => {
                 return <Deposit deposit={deposit} key={deposit.id} changeFunction={this.changeDeposit}/>
@@ -281,9 +265,10 @@ class ShareOverview extends Component {
                     <Table.Body>
                         {deposits}
                     </Table.Body>
-                    {this.state.share.deposits.length && (
+                    {this.state.deposits.length && (
                         <Table.Footer>
-                            <EditDeposit personId={this.state.share.deposits[0].person_id}
+                            <EditDeposit personId={this.state.deposits[0].person_id}
+                                         personName={this.state.deposits[0].person_name}
                                          updateFunction={this.reloadDeposits}/>
                         </Table.Footer>
                     )}

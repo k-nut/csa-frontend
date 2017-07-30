@@ -92,6 +92,12 @@ const getShare = (id) => {
         .then(json => json.share)
 }
 
+const getShareDeposits = (id) => {
+    return fetchAuthenticated(`${BASE_URL}/shares/${id}/deposits`)
+        .then(res => res.json())
+        .then(json => json.deposits)
+}
+
 const getPerson = (id) => {
     return fetchAuthenticated(`${BASE_URL}/person/${id}`)
         .then(res => res.json())
@@ -129,5 +135,6 @@ export default {
     addDeposit,
     mergeShares,
     uploadFile,
-    getSharesPayments
+    getSharesPayments,
+    getShareDeposits,
 }
