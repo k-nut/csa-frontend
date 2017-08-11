@@ -204,9 +204,9 @@ class ShareOverview extends Component {
     };
 
     changeDeposit = (deposit, property, value) => {
-        const selectedDeposit = find(this.state.share.deposits, deposit);
+        const selectedDeposit = find(this.state.deposits, deposit);
         selectedDeposit[property] = value;
-        this.setState({share: this.state.share});
+        this.setState({deposits: this.state.deposits});
         Api.updateDeposit(selectedDeposit)
     }
 
