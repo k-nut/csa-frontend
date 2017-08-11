@@ -224,7 +224,7 @@ class ShareOverview extends Component {
     }
 
     sendDifference = () => {
-        window.location.href = Email.getDifferenceText(this.state.share);
+        window.location.href = Email.getDifferenceText(this.state.share, this.state.deposits);
     };
 
     sendMissing = () => {

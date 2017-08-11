@@ -1,9 +1,11 @@
 import moment from "moment";
 
-const getDifferenceText = (share) => {
-    const deposists = share.deposits.map((deposit, index) => {
-        return `${index + 1}) ${moment(deposit.timestamp).format("DD.MM.YYYY")} - ${deposit.amount} Euro`
-    }).join("\n\n");
+const getDifferenceText = (share, deposits) => {
+    const payments = deposits
+        .filter(deposit => !(deposit.ignore || deposit.is_security))
+        .map((deposit, index) => {
+            return `${index + 1}) ${moment(deposit.timestamp).format("DD.MM.YYYY")} - ${deposit.amount} Euro`
+        }).join("\n\n");
 
     const body = window.encodeURIComponent(`Hallo,
         
@@ -13,7 +15,7 @@ Leider gibt es noch Unstimmigkeiten mit deinem Beitrag.
 
 Wir haben bisher von dir im Wirtschaftsjahr 2017 bekommen: 
 
-${deposists}
+${payments}
 
 Damit hast du bei uns ein Guthaben von ${share.total_deposits} Euro.
 
