@@ -45,11 +45,16 @@ class Bets extends Component {
     }
 
     render() {
+        const stations = _.reduce(this.state.stations, (acc, station) => {
+            acc[station.id] = station.name.toLowerCase();
+            return acc;
+        }, {});
+
         const shares = _.chain(this.state.shares)
             .filter(share => {
                 const term = this.state.nameFilter.toLowerCase();
                 const nameMatches = _.includes(share.name.toLowerCase(), term);
-                const stationMatches = !share.station_name || _.includes(share.station_name.toLowerCase(), term);
+                const stationMatches = !stations || !share.station_id || _.includes(stations[share.station_id], term);
                 return nameMatches || stationMatches;
             })
             .sortBy(["station_id", "name"])
@@ -124,7 +129,8 @@ function Bet(props) {
                 <Dropdown selection
                           defaultValue={props.share.station_id}
                           options={stations}
-                          onChange={changeStation}/> </Table.Cell>
+                          onChange={changeStation}/>
+            </Table.Cell>
             <Table.Cell>
                 <Input defaultValue={props.share.bet_value}
                        onChange={changeBet}/></Table.Cell>
