@@ -3,6 +3,7 @@ import _ from "lodash";
 import {Table, Input, Checkbox, Loader} from "semantic-ui-react";
 import Api from "./Api";
 import { Link } from "react-router-dom"
+import * as queryString from "query-string";
 
 function Share(props) {
     const state = props.share.difference_today < 0 ? "negative" : "positive";
@@ -26,28 +27,46 @@ function Share(props) {
 class List extends Component {
     constructor(props) {
         super(props);
-
+        const params = queryString.parse(props.location.search);
         this.state = {
             shares: [],
-            nameFilter: "",
-            filterProblems: false,
+            nameFilter: params.nameFilter,
+            filterProblems: params.filterProblems,
+            showArchived: params.showArchived,
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.setFilterProblems = this.setFilterProblems.bind(this);
         this.showArchived = this.showArchived.bind(this);
+        this.syncState = this.syncState.bind(this);
+    }
+
+    syncState() {
+        const currentState = queryString.parse(this.props.location.search);
+        currentState.nameFilter = this.state.nameFilter;
+        if (this.state.filterProblems) {
+            currentState.filterProblems = this.state.filterProblems;
+        } else {
+            delete currentState.filterProblems;
+        }
+        if (this.state.showArchived) {
+            currentState.showArchived = this.state.showArchived;
+        } else {
+            delete currentState.showArchived;
+        }
+        this.props.history.replace({search:`${queryString.stringify(currentState)}`});
     }
 
     handleChange(event) {
-        this.setState({nameFilter: event.target.value});
+        this.setState({nameFilter: event.target.value}, this.syncState);
     }
 
     setFilterProblems(event, data) {
-        this.setState({filterProblems: data.checked})
+        this.setState({filterProblems: data.checked}, this.syncState)
     }
 
     showArchived(event, data) {
-        this.setState({showArchived: data.checked})
+        this.setState({showArchived: data.checked}, this.syncState)
     }
 
     componentDidMount() {
