@@ -109,8 +109,8 @@ class List extends Component {
                     <Checkbox checked={this.state.filterProblems} onChange={this.setFilterProblems} label="Nur Fehlbeträge zeigen" />
                     <Checkbox checked={this.state.showArchived} onChange={this.showArchived} label="Archivierte anzeigen" />
                 </div>
-                <Table celled>
-                    <Table.Header className="stickytable">
+                <Table celled className="stickytable">
+                    <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell> Namen </Table.HeaderCell>
                             <Table.HeaderCell> Abholstelle </Table.HeaderCell>

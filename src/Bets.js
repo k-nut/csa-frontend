@@ -68,8 +68,8 @@ class Bets extends Component {
         return (
             <div>
                 <Input value={this.state.nameFilter} onChange={this.handleChange} placeholder="Filter..."/>
-                <Table celled>
-                    <Table.Header className="stickytable">
+                <Table celled  className="stickytable">
+                    <Table.Header >
                         <Table.Row>
                             <Table.HeaderCell> Name </Table.HeaderCell>
                             <Table.HeaderCell> Notiz </Table.HeaderCell>
