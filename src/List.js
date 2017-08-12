@@ -14,6 +14,7 @@ function Share(props) {
                     {props.share.name}
                 </Link>
             </Table.Cell>
+            <Table.Cell> {props.share.note} </Table.Cell>
             <Table.Cell> {props.share.station_name} </Table.Cell>
             <Table.Cell> {props.share.number_of_deposits} </Table.Cell>
             <Table.Cell> {props.share.expected_today} </Table.Cell>
@@ -113,6 +114,7 @@ class List extends Component {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell> Namen </Table.HeaderCell>
+                            <Table.HeaderCell> Notiz </Table.HeaderCell>
                             <Table.HeaderCell> Abholstelle </Table.HeaderCell>
                             <Table.HeaderCell> Zahlungen </Table.HeaderCell>
                             <Table.HeaderCell> Erwartet </Table.HeaderCell>
