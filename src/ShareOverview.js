@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Table, Header, Input, Checkbox, Button, Dropdown} from "semantic-ui-react";
+import {Table, Header, Input, Checkbox, Button, Dropdown, Form} from "semantic-ui-react";
 import moment from "moment";
 import PropTypes from "prop-types";
 import Api from "./Api"
@@ -8,6 +8,8 @@ import "./ShareOverview.css";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import * as Email from "./Email";
+import toastr from "toastr";
+
 
 class Deposit extends Component {
 
@@ -203,6 +205,13 @@ class ShareOverview extends Component {
         this.sendUpdate(share);
     };
 
+    updateNote = (_, v) => {
+        const share = this.state.share;
+        share.note = v.value;
+        this.setState({share: share});
+        this.sendUpdate(share);
+    };
+
     changeDeposit = (deposit, property, value) => {
         const selectedDeposit = find(this.state.deposits, deposit);
         selectedDeposit[property] = value;
@@ -233,7 +242,9 @@ class ShareOverview extends Component {
 
 
     sendUpdate = debounce(share => {
-        Api.updateShare(share)
+        Api.updateShare(share).then(() => {
+            toastr.success("Anteil aktualisiert",  '', {timeOut: 500})
+        })
     }, 500);
 
     render() {
@@ -245,11 +256,16 @@ class ShareOverview extends Component {
         return (
             <div>
                 <Header> {this.state.share.name} </Header>
-                <div className="spaced">
-                    <Input label="E=Mail" value={this.state.share.email || ""} onChange={this.updateEmail}/>
+                <div className="spaced" style={{display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}>
+                    <Input label="E-Mail" value={this.state.share.email || ""} onChange={this.updateEmail}/>
+                    <Form>
+                        <Form.TextArea label="Notiz" value={this.state.share.note} onChange={this.updateNote}/>
+                    </Form>
                     <Button onClick={this.archive}
+                            color="red"
                             icon={this.state.share.archived ? 'repeat' : 'trash'}
                             content={this.state.share.archived ? 'Wiederherstellen' : 'Archivieren'}/>
+
                 </div>
                 <Table celled>
                     <Table.Header>
