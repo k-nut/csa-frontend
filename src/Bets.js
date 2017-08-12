@@ -20,7 +20,7 @@ class Bets extends Component {
         };
 
         this.handleChange = this.handleChange.bind(this);
-        this.changeMonth = this.changeMonth.bind(this);
+        this.changeProperty = this.changeProperty.bind(this);
     }
 
     handleChange(event) {
@@ -33,7 +33,7 @@ class Bets extends Component {
     }
 
 
-    changeMonth(share, property, value) {
+    changeProperty(share, property, value) {
         share[property] = value;
         return Api.updateShare(share).then(updatedShare => {
             const newShares = _.cloneDeep(this.state.shares);
@@ -61,7 +61,7 @@ class Bets extends Component {
             .map(share => {
                 return <Bet share={share}
                             stations={this.state.stations}
-                            changeMonth={this.changeMonth}
+                            changeProperty={this.changeProperty}
                             key={share.name}/>
             })
             .value();
@@ -97,16 +97,16 @@ function Bet(props) {
     });
 
     const changeMonth = (e, v) => {
-        props.changeMonth(props.share, "start_date", v.value)
+        props.changeProperty(props.share, "start_date", v.value)
     };
 
-    const changeBet = _.debounce((_, v) => { props.changeMonth(props.share, "bet_value", v.value)}, 500);
+    const changeBet = _.debounce((_, v) => { props.changeProperty(props.share, "bet_value", v.value)}, 500);
 
-    const changeNote = _.debounce((_, v) => { props.changeMonth(props.share, "note", v.value)}, 500);
+    const changeNote = _.debounce((_, v) => { props.changeProperty(props.share, "note", v.value)}, 500);
 
 
     const changeStation = (_, values) => {
-        props.changeMonth(props.share, "station_id", values.value)
+        props.changeProperty(props.share, "station_id", values.value)
     };
 
     const stations = props.stations.map(station => {
