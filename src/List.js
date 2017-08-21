@@ -4,6 +4,7 @@ import {Table, Input, Checkbox, Loader} from "semantic-ui-react";
 import Api from "./Api";
 import { Link } from "react-router-dom"
 import * as queryString from "query-string";
+import {filterNameAndStation} from "./Utils";
 
 function Share(props) {
     const state = props.share.difference_today < 0 ? "negative" : "positive";
@@ -78,14 +79,7 @@ class List extends Component {
 
     render() {
         const shares = _.chain(this.state.shares)
-            .filter(share => {
-                if (!this.state.nameFilter) { return true }
-                if (!share.name || !share.station_name){ return false }
-                const term = this.state.nameFilter.toLowerCase();
-                const nameMatches = _.includes(share.name.toLowerCase(), term);
-                const stationMatches = _.includes(share.station_name.toLowerCase(), term);
-                return nameMatches || stationMatches;
-            })
+            .filter(filterNameAndStation(this.state.nameFilter))
             .filter(share => {
                 if (this.state.filterProblems){
                     return share.difference_today < 0;

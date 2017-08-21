@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import _ from "lodash";
-import {Input, Table, Dropdown, Loader} from "semantic-ui-react";
 import moment from "moment";
 import {Link} from "react-router-dom";
-import "toastr/build/toastr.css"
 import toastr from "toastr";
+import "toastr/build/toastr.css"
+
+import {Input, Table, Dropdown, Loader} from "semantic-ui-react";
 import Api from "./Api"
+import { filterNameAndStation } from "./Utils";
 
 
 
@@ -28,8 +30,26 @@ class Bets extends Component {
     }
 
     componentDidMount() {
-        Api.getShares().then(shares => { this.setState({shares}) });
-        Api.getStations().then(stations => { this.setState({stations}) });
+        function keyById(stations){
+            return _.reduce(stations, (acc, station) => {
+                acc[station.id] = station.name;
+                return acc;
+            }, {});
+        }
+
+        Promise.all([Api.getShares(), Api.getStations()]).then(([shares, stations]) => {
+            const keyedStations = keyById(stations);
+            
+            const newShares = shares.map(share => {
+                share.station_name = keyedStations[share.station_id];
+                return share
+            });
+
+            this.setState({
+                shares: newShares,
+                stations: stations,
+            })
+        });
     }
 
 
@@ -45,18 +65,8 @@ class Bets extends Component {
     }
 
     render() {
-        const stations = _.reduce(this.state.stations, (acc, station) => {
-            acc[station.id] = station.name.toLowerCase();
-            return acc;
-        }, {});
-
         const shares = _.chain(this.state.shares)
-            .filter(share => {
-                const term = this.state.nameFilter.toLowerCase();
-                const nameMatches = _.includes(share.name.toLowerCase(), term);
-                const stationMatches = !stations || !share.station_id || _.includes(stations[share.station_id], term);
-                return nameMatches || stationMatches;
-            })
+            .filter(filterNameAndStation(this.state.nameFilter))
             .sortBy(["station_id", "name"])
             .map(share => {
                 return <Bet share={share}
