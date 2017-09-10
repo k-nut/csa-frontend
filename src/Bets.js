@@ -18,6 +18,7 @@ class Bets extends Component {
         this.state = {
             shares: [],
             nameFilter: "",
+            newShare: {},
             stations: [],
         };
 
@@ -52,16 +53,35 @@ class Bets extends Component {
         });
     }
 
-
-    changeProperty(share, property, value) {
+    changeExistingShare(share, property, value){
         share[property] = value;
         return Api.updateShare(share).then(updatedShare => {
             const newShares = _.cloneDeep(this.state.shares);
             const index  = _.findIndex(newShares, share);
             newShares[index] = updatedShare;
             this.setState({shares: newShares});
-            toastr.success(`${share.name} aktualisiert!`,  '', {timeOut: 500})
+            toastr.success(`${updatedShare.name} aktualisiert!`,  '', {timeOut: 500})
         })
+    }
+
+
+    changeProperty(share, property, value) {
+        if (share !== this.state.newShare){
+            this.changeExistingShare(share, property, value);
+        } else {
+            share[property] = value;
+            this.setState({newShare: share});
+            if (share.station_id && share.name && share.start_date && share.bet_value){
+                return Api.updateShare(share).then(updatedShare => {
+                    const newShares = this.state.shares.concat(updatedShare);
+                    this.setState({
+                        shares: newShares,
+                        newShare: {name: ""},
+                    });
+                    toastr.success(`${updatedShare.name} erstellt!`,  '', {timeOut: 500})
+                })
+            }
+        }
     }
 
     render() {
@@ -72,7 +92,7 @@ class Bets extends Component {
                 return <Bet share={share}
                             stations={this.state.stations}
                             changeProperty={this.changeProperty}
-                            key={share.name}/>
+                            key={share.id}/>
             })
             .value();
         return (
@@ -94,32 +114,37 @@ class Bets extends Component {
                         </Table.Body> :
                         <Loader active inline='centered'/>
                     }
+                    <Table.Footer  style={{backgroundColor: "rgba(82, 189, 82, 0.21)"}}>
+                        <Bet share={this.state.newShare} stations={this.state.stations} changeProperty={this.changeProperty} />
+                    </Table.Footer>
                 </Table>
             </div>
         );
     }
 }
 
-function Bet(props) {
+function Bet({share, stations, changeProperty}) {
     const months = _.range(12).map(i => {
         const date = moment().startOf("year").add(i, 'months');
         return {text: date.format("MMMM"), value: date.format()}
     });
 
     const changeMonth = (e, v) => {
-        props.changeProperty(props.share, "start_date", v.value)
+        changeProperty(share, "start_date", v.value)
     };
 
-    const changeBet = _.debounce((_, v) => { props.changeProperty(props.share, "bet_value", v.value)}, 500);
+    const changeBet = _.debounce((_, v) => { changeProperty(share, "bet_value", v.value)}, 500);
 
-    const changeNote = _.debounce((_, v) => { props.changeProperty(props.share, "note", v.value)}, 500);
+    const changeNote = _.debounce((_, v) => { changeProperty(share, "note", v.value)}, 500);
+
+    const changeName = _.debounce((_, v) => { changeProperty(share, "name", v.value)}, 500);
 
 
     const changeStation = (_, values) => {
-        props.changeProperty(props.share, "station_id", values.value)
+        changeProperty(share, "station_id", values.value)
     };
 
-    const stations = props.stations.map(station => {
+    stations = stations.map(station => {
         station.value = station.id;
         station.text = station.name;
         return station
@@ -128,30 +153,33 @@ function Bet(props) {
     return (
         <Table.Row>
             <Table.Cell>
-                <Link to={`/share/${props.share.id}`}>
-                    {props.share.name}
-                </Link>
+                {share.id ?
+                    <Link to={`/share/${share.id}`}>
+                        {share.name}
+                    </Link>
+                    : <div> Neu: <Input defaultValue={share.name} onChange={changeName} /></div>
+                }
+
             </Table.Cell>
             <Table.Cell>
-                <Input defaultValue={props.share.note} onChange={changeNote} />
+                <Input defaultValue={share.note} onChange={changeNote} />
             </Table.Cell>
             <Table.Cell>
                 <Dropdown selection
-                          defaultValue={props.share.station_id}
+                          defaultValue={share.station_id}
                           options={stations}
                           onChange={changeStation}/>
             </Table.Cell>
             <Table.Cell>
-                <Input defaultValue={props.share.bet_value}
+                <Input defaultValue={share.bet_value}
                        onChange={changeBet}/></Table.Cell>
             <Table.Cell>
                 <Dropdown selection
-                          defaultValue={moment(props.share.start_date).format()}
+                          defaultValue={moment(share.start_date).format()}
                           options={months}
                           onChange={changeMonth}/>
             </Table.Cell>
         </Table.Row>
     );
 }
-
 export default Bets;

@@ -28,7 +28,8 @@ const getSharesPayments = () => {
 };
 
 const updateShare = (share) => {
-    return fetchAuthenticated(`${BASE_URL}/shares/${share.id}`,
+    const url = share.id ? `${BASE_URL}/shares/${share.id}` : `${BASE_URL}/shares`;
+    return fetchAuthenticated(url,
         {
             method: 'post',
             body: JSON.stringify(share),
