@@ -160,6 +160,7 @@ class MergeShare extends Component {
         return (
             <div>
                 <Dropdown selection
+                          search
                           value={this.state.selectedShare}
                           onChange={this.changShare}
                           options={this.state.sharesList}/>
