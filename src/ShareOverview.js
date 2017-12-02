@@ -7,8 +7,9 @@ import {debounce, find, sortBy} from "lodash";
 import "./ShareOverview.css";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
+
 import * as Email from "./Email";
-import toastr from "toastr";
+import toast from "./Toast";
 
 
 class Deposit extends Component {
@@ -235,7 +236,7 @@ class ShareOverview extends Component {
 
     sendUpdate = debounce(share => {
         Api.updateShare(share).then(() => {
-            toastr.success("Anteil aktualisiert",  '', {timeOut: 500})
+            toast.success("Anteil aktualisiert",  '', {timeOut: 500})
         })
     }, 500);
 

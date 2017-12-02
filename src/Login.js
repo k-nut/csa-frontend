@@ -1,7 +1,8 @@
 import React from "react";
 import {Form} from "semantic-ui-react";
+
 import Api from "./Api"
-import toastr from "toastr";
+import toast from "./Toast";
 
 export default class Login extends React.Component {
     constructor(props) {
@@ -24,7 +25,7 @@ export default class Login extends React.Component {
                 this.props.history.push("/")
             })
             .catch(() => {
-                toastr.error("Login fehlgeschlagen");
+                toast.error("Login fehlgeschlagen");
                 window.localStorage.clear()
             });
     }

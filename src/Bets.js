@@ -2,11 +2,11 @@ import React, {Component} from 'react';
 import _ from "lodash";
 import moment from "moment";
 import {Link} from "react-router-dom";
-import toastr from "toastr";
-import "toastr/build/toastr.css"
+
 
 import {Input, Table, Dropdown, Loader} from "semantic-ui-react";
 import Api from "./Api"
+import toast from "./Toast"
 import { filterNameAndStation } from "./Utils";
 
 
@@ -60,7 +60,7 @@ class Bets extends Component {
             const index  = _.findIndex(newShares, share);
             newShares[index] = updatedShare;
             this.setState({shares: newShares});
-            toastr.success(`${updatedShare.name} aktualisiert!`,  '', {timeOut: 500})
+            toast.success(`${updatedShare.name} aktualisiert!`,  '', {timeOut: 500})
         })
     }
 
@@ -78,7 +78,7 @@ class Bets extends Component {
                         shares: newShares,
                         newShare: {name: ""},
                     });
-                    toastr.success(`${updatedShare.name} erstellt!`,  '', {timeOut: 500})
+                    toast.success(`${updatedShare.name} erstellt!`,  '', {timeOut: 500})
                 })
             }
         }
