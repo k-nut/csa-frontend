@@ -104,6 +104,11 @@ const getPerson = (id) => {
         .then(res => res.json())
 }
 
+const getUserEmails = () => {
+    return fetchAuthenticated(`${BASE_URL}/users`)
+        .then(res => res.json())
+}
+
 const mergeShares = (share1, share2) => {
     return fetchAuthenticated(`${BASE_URL}/shares/merge`, {
             method: 'post',
@@ -138,4 +143,5 @@ export default {
     uploadFile,
     getSharesPayments,
     getShareDeposits,
+    getUserEmails,
 }
