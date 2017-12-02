@@ -245,6 +245,7 @@ class ShareOverview extends Component {
             .map(deposit => {
                 return <Deposit deposit={deposit} key={deposit.id} changeFunction={this.changeDeposit}/>
             });
+
         return (
             <div>
                 <Header> {this.state.share.name} </Header>
@@ -258,6 +259,9 @@ class ShareOverview extends Component {
                             icon={this.state.share.archived ? 'repeat' : 'trash'}
                             content={this.state.share.archived ? 'Wiederherstellen' : 'Archivieren'}/>
 
+                </div>
+                <div>
+                    Monatliches Gebot: <b>{this.state.share.bet_value} Euro</b>
                 </div>
                 <Table celled>
                     <Table.Header>
