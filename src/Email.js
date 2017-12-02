@@ -7,6 +7,13 @@ const getDifferenceText = (share, deposits) => {
             return `${index + 1}) ${moment(deposit.timestamp).format("DD.MM.YYYY")} - ${deposit.amount} Euro`
         }).join("\n\n");
 
+    const months = ["Januar", "Februar", "März",
+                    "April", "Mai", "Juni",
+                    "Juli", "August", "September",
+                    "Oktober", "November", "Dezember"];
+
+    const thisMonth = moment().month();
+
     const body = window.encodeURIComponent(`Hallo,
         
 Ich bin bei der Solawi für die Kontoverwaltung zuständig.
@@ -17,14 +24,14 @@ Wir haben bisher von dir im Wirtschaftsjahr 2017 bekommen:
 
 ${payments}
 
-Damit hast du bei uns ein Guthaben von ${share.total_deposits} Euro.
+Damit hast du bei uns ein Zahlungseingang von ${share.total_deposits} Euro.
 
-Bitte überweise deshalb im (Monat) einmalig ${-1 * share.difference_today} Euro.
-Bitte richte ab (Folgemonat) einen Dauerauftrag ein.
+Bitte überweise deshalb im ${months[thisMonth]} einmalig ${-1 * share.difference_today} Euro.
+Bitte richte ab ${months[(thisMonth + 1) % 12]} einen Dauerauftrag ein.
 
 Vielen lieben Dank!
         `);
-    const subject = window.encodeURIComponent("Solawi - Fehlender Beitrag")
+    const subject = window.encodeURIComponent("Solawi - Unstimmigkeiten")
     return `mailto:${share.email}?subject=${subject}&body=${body}`;
 };
 
@@ -33,8 +40,15 @@ const getMissingText = (share) => {
 
 Ich bin bei der Solawi für die Kontoverwaltung zuständig.
 
-Dein aktueller Monatsbeitrag fehlt noch. Es wäre toll, wenn du einen Dauerauftrag einrichten könntest, sodass das Geld vor Ende des Vormonats eingeht. Falls das nicht geht, überweise bitte immer um den 26. des Vormonats, sodass das Geld rechtzeitig da ist.
+Dein aktueller Monatsbeitrag fehlt noch.
+Es wäre toll, wenn du einen Dauerauftrag einrichten könntest,
+sodass das Geld um den 26. des Vormonats eingeht. 
+Falls das nicht geht, überweise bitte immer um den 26. des Vormonats, 
+sodass das Geld rechtzeitig da ist.
 
+Das ist wichtig, sonst ist deine Überweisung noch nicht im System sichtbar,
+weil wir oft mit den Umsätzen vom 29. des Monats arbeiten
+ (das ist ja das Datum, zu dem der Beitrag eingegangen sein soll).
 
 Danke dir!
         `);
