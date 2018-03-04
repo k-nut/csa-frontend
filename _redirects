@@ -1,2 +1,2 @@
-/api/*  %REACT_APP_API%/:splat  200
+/api/*  %BACKEND_API%/:splat  200
 /*    /index.html   200

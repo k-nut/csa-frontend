@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && sed \"s#%REACT_APP_API%#$REACT_APP_API#\" _redirects > build/_redirects && cat build/_redirects",
+    "build": "react-scripts build && sed \"s#%BACKEND_API%#$BACKEND_API#\" _redirects > build/_redirects && cat build/_redirects",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
