@@ -124,9 +124,9 @@ class Bets extends Component {
 }
 
 function Bet({share, stations, changeProperty}) {
-    const months = _.range(12).map(i => {
-        const date = moment().startOf("year").add(i, 'months');
-        return {text: date.format("MMMM"), value: date.format()}
+    const months = _.range(24).map(i => {
+        const date = moment("2017-01-01").startOf("year").add(i, 'months');
+        return {text: date.format("MMMM YYYY"), value: date.format()}
     });
 
     const changeMonth = (e, v) => {
