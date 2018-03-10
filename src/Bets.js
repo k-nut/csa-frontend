@@ -133,7 +133,7 @@ function Bet({share, stations, changeProperty}) {
         changeProperty(share, "start_date", v.value)
     };
 
-    const changeBet = _.debounce((_, v) => { changeProperty(share, "bet_value", v.value)}, 500);
+    const changeBet = _.debounce((_, v) => { changeProperty(share, "bet_value", v.value.replace(",", "."))}, 500);
 
     const changeNote = _.debounce((_, v) => { changeProperty(share, "note", v.value)}, 500);
 
