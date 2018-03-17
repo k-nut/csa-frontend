@@ -3,7 +3,7 @@ import {Table, Header, Input, Checkbox, Button, Dropdown, Form} from "semantic-u
 import moment from "moment";
 import PropTypes from "prop-types";
 import Api from "./Api"
-import {debounce, find, sortBy} from "lodash";
+import {debounce, find, sortBy, range} from "lodash";
 import "./ShareOverview.css";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
@@ -179,6 +179,125 @@ MergeShare.propTypes = {
     history: PropTypes.object,
 }
 
+class Bet extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      start_date: props.bet.start_date,
+      end_date: props.bet.end_date,
+      value: props.bet.value,
+      id: props.bet.id,
+    }
+    this.changeStart = this.changeStart.bind(this);
+    this.changeEnd = this.changeEnd.bind(this);
+    this.changeValue = this.changeValue.bind(this);
+  }
+
+
+  changeStart(_, data) {
+    this.setState({start_date: data.value}, this.update)
+  }
+  
+  update = debounce(() => {
+    this.props.updateCallback(this.state);
+  }, 500);
+  
+  changeEnd(_, data) {
+    this.setState({end_date: data.value}, this.update)
+  }
+
+  changeValue(event) {
+    this.setState({value: event.target.value}, this.update)
+  }
+
+  render() {
+    const months = range(24).map(i => {
+      const date = moment("2017-01-01").startOf("year").add(i, 'months');
+      return {text: date.format("MMMM YYYY"), value: date.format()}
+    });
+
+    const endMonths = range(24).map(i => {
+      const date = moment("2017-01-01").startOf("year").add(i, 'months').endOf("month").startOf("day");
+      return {text: date.format("MMMM YYYY"), value: date.format()}
+    });
+
+    endMonths.push({text: "--", value: null})
+
+    const {start_date, end_date, value} = this.state;
+    console.log(end_date);
+
+    return (
+    <div>
+      <label> Start:
+        <Dropdown selection
+                  name="start_date"
+                  defaultValue={moment(start_date).format()}
+                  onChange={this.changeStart}
+                  options={months}
+                  />
+      </label>
+      <label> Ende:
+        <Dropdown selection
+                  defaultValue={moment(end_date).format()}
+                  onChange={this.changeEnd}
+                  options={endMonths}
+        />
+      </label>
+      <label> Betrag:
+        <input type="number" value={value} onChange={this.changeValue}/>
+      </label>
+      { this.props.bet.id && <button onClick={() => this.props.deleteCallback(this.props.bet.id)}> Löschen </button>}
+    </div>
+    )
+  }
+
+}
+
+class Bets extends Component {
+  static propTypes = {
+    shareId: PropTypes.number,
+  };
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      bets: []
+    }
+    this.loadData = this.loadData.bind(this);
+    this.deleteBet = this.deleteBet.bind(this);
+    this.updateBet = this.updateBet.bind(this);
+  }
+
+  loadData() {
+    Api.getBets(this.props.shareId).then(json => this.setState({bets: json.bets}))
+  }
+
+  componentDidMount() {
+    this.loadData()
+  }
+
+  deleteBet(betId) {
+    Api.deleteBet(this.props.shareId, betId).then(this.loadData)
+  }
+
+  updateBet(bet) {
+    console.log("updateBet", bet);
+    Api.updateBet(this.props.shareId, bet).then(this.loadData)
+  }
+
+  render() {
+    const betsWithNew = this.state.bets.concat({});
+    const bets = betsWithNew.map(bet => <Bet key={bet.id}
+                                                 bet={bet}
+                                                 deleteCallback={this.deleteBet}
+                                                 updateCallback={this.updateBet}
+    />);
+    return <div>{bets}</div>
+  }
+}
+
+
+
 class ShareOverview extends Component {
     constructor(props) {
         super(props);
@@ -261,9 +380,6 @@ class ShareOverview extends Component {
                             content={this.state.share.archived ? 'Wiederherstellen' : 'Archivieren'}/>
 
                 </div>
-                <div>
-                    Monatliches Gebot: <b>{this.state.share.bet_value} Euro</b>
-                </div>
                 <Table celled>
                     <Table.Header>
                         <Table.Row>
@@ -287,6 +403,11 @@ class ShareOverview extends Component {
                     )}
                 </Table>
 
+                { this.state.share.id && <div>
+                  <Header>Gebote</Header>
+                  <Bets shareId={this.state.share.id} />
+                </div> }
+
                 {this.state.share.id && <div>
                     <Header>Mit anderem Anteil zusammenführen</Header>
                     <MergeShare originalShare={this.state.share.id} history={this.props.history}/>
@@ -306,7 +427,6 @@ class ShareOverview extends Component {
 
 class SendEmail extends Component {
     sendDifference = () => {
-        console.log(this.makeCC());
         window.location.href = Email.getDifferenceText(this.props.share, this.props.deposits) + this.makeCC();
     };
 
@@ -329,7 +449,7 @@ class SendEmail extends Component {
         })
     }
 
-    
+
     constructor(){
         super()
         this.state = {users: [{"email": "knut@k-nut.eu"}, {"email": "peter@example.com"}]}

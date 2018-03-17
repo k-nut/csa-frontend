@@ -15,6 +15,7 @@ const fetchAuthenticated = (url, params) => {
     })
 };
 
+
 const getShares = () => {
     return fetchAuthenticated(`${BASE_URL}/shares`)
         .then(res => res.json())
@@ -109,6 +110,21 @@ const getUserEmails = () => {
         .then(res => res.json())
 }
 
+const getBets = (shareId) => {
+  return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/bets`)
+    .then(res => res.json())
+}
+
+const deleteBet = (shareId, betId) => {
+  return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/bets/${betId}`, {method: "DELETE"})
+    .then(res => res.json())
+}
+
+const updateBet = (shareId, bet) => {
+  return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/bets`, {method: "POST", body: JSON.stringify(bet)})
+    .then(res => res.json())
+}
+
 const mergeShares = (share1, share2) => {
     return fetchAuthenticated(`${BASE_URL}/shares/merge`, {
             method: 'post',
@@ -144,4 +160,7 @@ export default {
     getSharesPayments,
     getShareDeposits,
     getUserEmails,
+    getBets,
+    deleteBet,
+    updateBet,
 }

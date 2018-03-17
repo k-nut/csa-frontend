@@ -94,7 +94,7 @@ class List extends Component {
             })
             .sortBy(["station_name", "name"])
             .map(share => {
-                return <Share share={share} key={share.name}/>
+                return <Share share={share} key={share.id}/>
             })
             .value();
         return (

@@ -104,8 +104,7 @@ class Bets extends Component {
                             <Table.HeaderCell> Name </Table.HeaderCell>
                             <Table.HeaderCell> Notiz </Table.HeaderCell>
                             <Table.HeaderCell> Abholstelle </Table.HeaderCell>
-                            <Table.HeaderCell> Gebot </Table.HeaderCell>
-                            <Table.HeaderCell> Startmonat </Table.HeaderCell>
+                            <Table.HeaderCell> Gebote </Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
                     {this.state.shares.length ?
@@ -123,18 +122,22 @@ class Bets extends Component {
     }
 }
 
+function BetDuration({bet}) {
+    if (bet.end_date) {
+      return (
+        <div>
+          {moment(bet.start_date).format("MMM YY")} - {moment(bet.end_date).format("MMM YY")}: <b>{bet.value}€</b>
+        </div>
+      )
+    }
+    return (
+      <div>
+        Ab {moment(bet.start_date).format("MMM YY")}: <b>{bet.value}€</b>
+      </div>
+    )
+}
+
 function Bet({share, stations, changeProperty}) {
-    const months = _.range(24).map(i => {
-        const date = moment("2017-01-01").startOf("year").add(i, 'months');
-        return {text: date.format("MMMM YYYY"), value: date.format()}
-    });
-
-    const changeMonth = (e, v) => {
-        changeProperty(share, "start_date", v.value)
-    };
-
-    const changeBet = _.debounce((_, v) => { changeProperty(share, "bet_value", v.value.replace(",", "."))}, 500);
-
     const changeNote = _.debounce((_, v) => { changeProperty(share, "note", v.value)}, 500);
 
     const changeName = _.debounce((_, v) => { changeProperty(share, "name", v.value)}, 500);
@@ -171,13 +174,7 @@ function Bet({share, stations, changeProperty}) {
                           onChange={changeStation}/>
             </Table.Cell>
             <Table.Cell>
-                <Input defaultValue={share.bet_value}
-                       onChange={changeBet}/></Table.Cell>
-            <Table.Cell>
-                <Dropdown selection
-                          defaultValue={moment(share.start_date).format()}
-                          options={months}
-                          onChange={changeMonth}/>
+              {share.bets ? share.bets.map(bet => <BetDuration key={bet.id} bet={bet}/>) : ""}
             </Table.Cell>
         </Table.Row>
     );
