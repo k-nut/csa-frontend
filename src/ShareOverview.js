@@ -281,8 +281,10 @@ class Bets extends Component {
   }
 
   updateBet(bet) {
-    console.log("updateBet", bet);
-    Api.updateBet(this.props.shareId, bet).then(this.loadData)
+    Api.updateBet(this.props.shareId, bet).then(() => {
+      this.loadData();
+      toast.success("Gebot aktualisiert",  '', {timeOut: 500})
+    })
   }
 
   render() {
