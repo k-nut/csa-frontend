@@ -306,8 +306,11 @@ class ShareOverview extends Component {
 
         this.state = {
             share: {},
-            deposits: []
+            deposits: [],
+          editName: false,
         };
+
+        this.toggleEdit = this.toggleEdit.bind(this);
     }
 
     componentDidMount() {
@@ -335,6 +338,12 @@ class ShareOverview extends Component {
         this.sendUpdate(share);
     };
 
+    updateName = (_, v) => {
+      const share = this.state.share;
+      share.name = v.value;
+      this.setState({share: share});
+    };
+
     changeDeposit = (deposit, property, value) => {
         const selectedDeposit = find(this.state.deposits, deposit);
         selectedDeposit[property] = value;
@@ -347,6 +356,14 @@ class ShareOverview extends Component {
             .then(share => {
                 this.setState({share})
             });
+    }
+
+    toggleEdit(){
+      this.setState({editName: !this.state.editName}, () => {
+        if (!this.state.editName) {
+          this.sendUpdate(this.state.share);
+        }
+      });
     }
 
     archive = () => {
@@ -370,7 +387,19 @@ class ShareOverview extends Component {
 
         return (
             <div>
-                <Header> {this.state.share.name} </Header>
+                <Header>
+                  {this.state.editName?
+                    <Input value={this.state.share.name}
+                           onChange={this.updateName}
+                           style={{minWidth: "50%"}}
+                    />
+                    : this.state.share.name
+                  }
+                  <Button onClick={this.toggleEdit}
+                          icon="edit"
+                          content={this.state.editName ? "Speichern" : "Bearbeiten"} />
+
+                </Header>
                 <div className="spaced" style={{display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}>
                     <Input label="E-Mail" value={this.state.share.email || ""} onChange={this.updateEmail}/>
                     <Form>
