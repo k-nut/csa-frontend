@@ -1,11 +1,15 @@
 import moment from "moment";
+import * as _ from "lodash";
 
 const getDifferenceText = (share, deposits) => {
-    const payments = deposits
-        .filter(deposit => !(deposit.ignore || deposit.is_security))
-        .map((deposit, index) => {
+    const lastDecember = moment().startOf("year").subtract("1 month");
+    const validDeposits = deposits.filter(deposit => !(deposit.ignore || deposit.is_security))
+    .filter(deposit => moment(deposit.timestamp).isAfter(lastDecember));
+    const payments = validDeposits.map((deposit, index) => {
             return `${index + 1}) ${moment(deposit.timestamp).format("DD.MM.YYYY")} - ${deposit.amount} Euro`
         }).join("\n\n");
+
+    const totalDeposits = _.sumBy(validDeposits, 'amount');
 
     const months = ["Januar", "Februar", "März",
                     "April", "Mai", "Juni",
@@ -13,6 +17,7 @@ const getDifferenceText = (share, deposits) => {
                     "Oktober", "November", "Dezember"];
 
     const thisMonth = moment().month();
+    const thisYear  = moment().year();
 
     const body = window.encodeURIComponent(`Hallo,
         
@@ -20,11 +25,11 @@ Ich bin bei der Solawi für die Kontoverwaltung zuständig.
 
 Leider gibt es noch Unstimmigkeiten mit deinem Beitrag.
 
-Wir haben bisher von dir im Wirtschaftsjahr 2017 bekommen: 
+Wir haben bisher von dir im Wirtschaftsjahr ${thisYear} bekommen: 
 
 ${payments}
 
-Damit hast du bei uns ein Zahlungseingang von ${share.total_deposits} Euro.
+Damit hast du bei uns einen Zahlungseingang von ${totalDeposits} Euro.
 
 Bitte überweise deshalb im ${months[thisMonth]} einmalig ${-1 * share.difference_today} Euro.
 Bitte richte ab ${months[(thisMonth + 1) % 12]} einen Dauerauftrag ein.
