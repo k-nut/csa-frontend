@@ -2,24 +2,42 @@ import moment from "moment";
 import * as _ from "lodash";
 
 const getDifferenceText = (share, deposits) => {
-    const lastDecember = moment().startOf("year").subtract("1 month");
-    const validDeposits = deposits.filter(deposit => !(deposit.ignore || deposit.is_security))
+  const lastDecember = moment()
+    .startOf("year")
+    .subtract(1, "month");
+  const validDeposits = deposits
+    .filter(deposit => !(deposit.ignore || deposit.is_security))
     .filter(deposit => moment(deposit.timestamp).isAfter(lastDecember));
-    const payments = validDeposits.map((deposit, index) => {
-            return `${index + 1}) ${moment(deposit.timestamp).format("DD.MM.YYYY")} - ${deposit.amount} Euro`
-        }).join("\n\n");
+  const payments = validDeposits
+    .sort((a, b) => moment(a.timestamp) - moment(b.timestamp))
+    .map((deposit, index) => {
+      return `${index + 1}) ${moment(deposit.timestamp).format(
+        "DD.MM.YYYY"
+      )} - ${deposit.amount} Euro`;
+    })
+    .join("\n\n");
 
-    const totalDeposits = _.sumBy(validDeposits, 'amount');
+  const totalDeposits = _.sumBy(validDeposits, "amount");
 
-    const months = ["Januar", "Februar", "März",
-                    "April", "Mai", "Juni",
-                    "Juli", "August", "September",
-                    "Oktober", "November", "Dezember"];
+  const months = [
+    "Januar",
+    "Februar",
+    "März",
+    "April",
+    "Mai",
+    "Juni",
+    "Juli",
+    "August",
+    "September",
+    "Oktober",
+    "November",
+    "Dezember"
+  ];
 
-    const thisMonth = moment().month();
-    const thisYear  = moment().year();
+  const thisMonth = moment().month();
+  const thisYear = moment().year();
 
-    const body = window.encodeURIComponent(`Hallo,
+  const body = window.encodeURIComponent(`Hallo,
         
 Ich bin bei der Solawi für die Kontoverwaltung zuständig.
 
@@ -31,17 +49,18 @@ ${payments}
 
 Damit hast du bei uns einen Zahlungseingang von ${totalDeposits} Euro.
 
-Bitte überweise deshalb im ${months[thisMonth]} einmalig ${-1 * share.difference_today} Euro.
+Bitte überweise deshalb im ${months[thisMonth]} einmalig ${-1 *
+    share.difference_today} Euro.
 Bitte richte ab ${months[(thisMonth + 1) % 12]} einen Dauerauftrag ein.
 
 Vielen lieben Dank!
         `);
-    const subject = window.encodeURIComponent("Solawi - Unstimmigkeiten")
-    return `mailto:${share.email}?subject=${subject}&body=${body}`;
+  const subject = window.encodeURIComponent("Solawi - Unstimmigkeiten");
+  return `mailto:${share.email}?subject=${subject}&body=${body}`;
 };
 
-const getMissingText = (share) => {
-    const body = window.encodeURIComponent(`Hallo!
+const getMissingText = share => {
+  const body = window.encodeURIComponent(`Hallo!
 
 Ich bin bei der Solawi für die Kontoverwaltung zuständig.
 
@@ -57,11 +76,8 @@ weil wir oft mit den Umsätzen vom 29. des Monats arbeiten
 
 Danke dir!
         `);
-    const subject = window.encodeURIComponent("Solawi - Fehlender Beitrag")
-    return `mailto:${share.email}?subject=${subject}&body=${body}`;
+  const subject = window.encodeURIComponent("Solawi - Fehlender Beitrag");
+  return `mailto:${share.email}?subject=${subject}&body=${body}`;
 };
 
-export {
-    getDifferenceText,
-    getMissingText
-}
+export { getDifferenceText, getMissingText };
