@@ -75,10 +75,16 @@ class EditDeposit extends Component {
     submit = () => {
         const deposit = this.state;
         deposit.timestamp = moment(deposit.timestamp).format("YYYY-MM-DD");
-        Api.addDeposit(deposit)
-        this.state = {timestamp: moment()}
+        Api.addDeposit(deposit);
+        this.setState({
+          timestamp: moment(),
+          amount: 0,
+          title: '',
+          ignore: null,
+          is_security: null,
+        });
         this.props.updateFunction()
-    };
+    }
 
     handleInputChange(_, target) {
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -197,11 +203,11 @@ class Bet extends Component {
   changeStart(_, data) {
     this.setState({start_date: data.value}, this.update)
   }
-  
+
   update = debounce(() => {
     this.props.updateCallback(this.state);
   }, 500);
-  
+
   changeEnd(_, data) {
     this.setState({end_date: data.value}, this.update)
   }
@@ -224,7 +230,6 @@ class Bet extends Component {
     endMonths.push({text: "--", value: null})
 
     const {start_date, end_date, value} = this.state;
-    console.log(end_date);
 
     return (
     <div>
@@ -352,10 +357,7 @@ class ShareOverview extends Component {
     }
 
     reloadDeposits = () => {
-        Api.getShare(this.props.match.params.id)
-            .then(share => {
-                this.setState({share})
-            });
+      this.componentDidMount()
     }
 
     toggleEdit(){
