@@ -427,7 +427,7 @@ class ShareOverview extends Component {
                     <Table.Body>
                         {deposits}
                     </Table.Body>
-                    {this.state.deposits.length && (
+                    {this.state.deposits.length > 0 && (
                         <Table.Footer>
                             <EditDeposit personId={this.state.deposits[0].person_id}
                                          personName={this.state.deposits[0].person_name}
