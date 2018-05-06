@@ -9,7 +9,7 @@ import {filterNameAndStation} from "./Utils";
 function Share(props) {
     const state = props.share.difference_today < 0 ? "negative" : "positive";
     return (
-        <Table.Row className="share">
+        <Table.Row className="share" warning={props.share.archived}>
             <Table.Cell>
                 <Link to={`/share/${props.share.id}`}>
                     {props.share.name}

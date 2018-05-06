@@ -154,7 +154,7 @@ function Bet({share, stations, changeProperty}) {
     });
 
     return (
-        <Table.Row>
+        <Table.Row warning={share.archived}>
             <Table.Cell>
                 {share.id ?
                     <Link to={`/share/${share.id}`}>
