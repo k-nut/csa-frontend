@@ -8,26 +8,32 @@ import {Input, Table, Dropdown, Loader} from "semantic-ui-react";
 import Api from "./Api"
 import toast from "./Toast"
 import { filterNameAndStation } from "./Utils";
+import * as queryString from "query-string";
+import Checkbox from "semantic-ui-react/dist/es/modules/Checkbox/Checkbox";
 
 
 
 class Bets extends Component {
     constructor(props) {
         super(props);
+        const params = queryString.parse(props.location.search);
 
         this.state = {
             shares: [],
-            nameFilter: "",
+            nameFilter: params.nameFilter,
             newShare: {},
             stations: [],
+            showArchived: params.showArchived,
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.changeProperty = this.changeProperty.bind(this);
+        this.showArchived = this.showArchived.bind(this);
+        this.syncState = this.syncState.bind(this);
     }
 
     handleChange(event) {
-        this.setState({nameFilter: event.target.value});
+        this.setState({nameFilter: event.target.value}, this.syncState);
     }
 
     componentDidMount() {
@@ -64,6 +70,20 @@ class Bets extends Component {
         })
     }
 
+    syncState() {
+      const currentstate = queryString.parse(this.props.location.search);
+      currentstate.nameFilter = this.state.nameFilter;
+      if (this.state.showArchived) {
+        currentstate.showArchived = this.state.showArchived;
+      } else {
+        delete currentstate.showArchived;
+      }
+      this.props.history.replace({search:`${queryString.stringify(currentstate)}`});
+    }
+
+    showArchived(event, data) {
+      this.setState({showArchived: data.checked}, this.syncState)
+    }
 
     changeProperty(share, property, value) {
         if (share !== this.state.newShare){
@@ -87,6 +107,7 @@ class Bets extends Component {
     render() {
         const shares = _.chain(this.state.shares)
             .filter(filterNameAndStation(this.state.nameFilter))
+            .filter(share => this.state.showArchived ? true : !share.archived)
             .sortBy(["station_id", "name"])
             .map(share => {
                 return <Bet share={share}
@@ -97,8 +118,11 @@ class Bets extends Component {
             .value();
         return (
             <div>
-                <Input value={this.state.nameFilter} onChange={this.handleChange} placeholder="Filter..."/>
-                <Table celled  className="stickytable">
+                <div className="spaced">
+                  <Input value={this.state.nameFilter} onChange={this.handleChange} placeholder="Filter..."/>
+                  <Checkbox checked={this.state.showArchived} onChange={this.showArchived} label="Archivierte anzeigen" />
+                </div>
+                <Table celled className="stickytable">
                     <Table.Header >
                         <Table.Row>
                             <Table.HeaderCell> Name </Table.HeaderCell>
