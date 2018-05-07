@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Table, Header, Input, Checkbox, Button, Dropdown, Form} from "semantic-ui-react";
+import {Table, Header, Input, Checkbox, Button, Dropdown, Form, Icon, Label} from "semantic-ui-react";
 import moment from "moment";
 import PropTypes from "prop-types";
 import Api from "./Api"
@@ -30,7 +30,15 @@ class Deposit extends Component {
             <Table.Row className={(deposit.ignore || deposit.is_security) ? 'ignored' : ""}>
                 <Table.Cell> {moment(deposit.timestamp).format("DD.MM.YYYY")} </Table.Cell>
                 <Table.Cell> {deposit.amount} </Table.Cell>
-                <Table.Cell> {deposit.title} </Table.Cell>
+                <Table.Cell>
+                  {deposit.title}
+                  { deposit.added_by_email && <Label>
+                    <Icon name="write" />
+                    Manuell hinzugefügt von: {deposit.added_by_email}
+                    </Label>
+                    }
+
+                  </Table.Cell>
                 <Table.Cell> {deposit.person_name} </Table.Cell>
                 <Table.Cell>
                     {ignore}
