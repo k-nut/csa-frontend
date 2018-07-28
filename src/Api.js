@@ -116,8 +116,7 @@ const getBets = (shareId) => {
 }
 
 const deleteBet = (shareId, betId) => {
-  return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/bets/${betId}`, {method: "DELETE"})
-    .then(res => res.json())
+  return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/bets/${betId}`, {method: "DELETE"});
 }
 
 const updateBet = (shareId, bet) => {
