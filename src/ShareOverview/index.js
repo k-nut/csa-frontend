@@ -11,6 +11,11 @@ import SendEmail from "./SendEmail";
 import Deposit from "./Deposit";
 import EditDeposit from "./EditDeposit";
 
+import styled from 'styled-components';
+
+const Container = styled.div`
+    padding: 20px;
+`
 
 class ShareOverview extends Component {
     constructor(props) {
@@ -71,7 +76,7 @@ class ShareOverview extends Component {
             });
 
         return (
-            <div>
+            <Container>
                 <Header> { this.state.share.name } </Header>
                 <div className="spaced" style={{display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}>
                     <Form>
@@ -121,8 +126,7 @@ class ShareOverview extends Component {
 
                 <SendEmail share={this.state.share} deposits={this.state.deposits}></SendEmail>
 
-
-            </div>
+            </Container>
         );
     }
 }

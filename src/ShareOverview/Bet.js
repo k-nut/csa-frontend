@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {debounce, range} from "lodash";
 import moment from "moment";
-import {Dropdown} from "semantic-ui-react";
+import {Dropdown, Input} from "semantic-ui-react";
 
 class Bet extends Component {
     constructor(props) {
@@ -67,7 +67,7 @@ class Bet extends Component {
                     />
                 </label>
                 <label> Betrag:
-                    <input type="number" value={value} onChange={this.changeValue}/>
+                    <Input type="number" value={value} onChange={this.changeValue}/>
                 </label>
                 {this.props.bet.id &&
                 <button onClick={() => this.props.deleteCallback(this.props.bet.id)}> Löschen </button>}

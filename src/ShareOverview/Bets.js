@@ -4,6 +4,14 @@ import Api from "../Api";
 import toast from "../Toast";
 import Bet from "./Bet";
 
+import styled from 'styled-components';
+
+const BetContainer = styled.div`
+    & > div {
+        margin-top: 10px
+    }
+`
+
 class Bets extends Component {
     static propTypes = {
         shareId: PropTypes.number,
@@ -45,7 +53,7 @@ class Bets extends Component {
                                                  deleteCallback={this.deleteBet}
                                                  updateCallback={this.updateBet}
         />);
-        return <div>{bets}</div>
+        return <BetContainer>{bets}</BetContainer>
     }
 }
 
