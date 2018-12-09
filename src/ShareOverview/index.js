@@ -124,7 +124,9 @@ class ShareOverview extends Component {
 
                 <Header> E-Mails </Header>
 
-                <SendEmail share={this.state.share} deposits={this.state.deposits}></SendEmail>
+                {this.state.share.id &&
+                    <SendEmail share={this.state.share} deposits={this.state.deposits}></SendEmail>
+                }
 
             </Container>
         );
