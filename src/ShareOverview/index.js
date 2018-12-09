@@ -33,13 +33,6 @@ class ShareOverview extends Component {
             });
     }
 
-    updateEmail = (_, v) => {
-        const share = this.state.share;
-        share.email = v.value;
-        this.setState({share: share});
-        this.sendUpdate(share);
-    };
-
     updateNote = (_, v) => {
         const share = this.state.share;
         share.note = v.value;
@@ -81,7 +74,6 @@ class ShareOverview extends Component {
             <div>
                 <Header> { this.state.share.name } </Header>
                 <div className="spaced" style={{display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}>
-                    <Input label="E-Mail" value={this.state.share.email || ""} onChange={this.updateEmail}/>
                     <Form>
                         <Form.TextArea label="Notiz" value={this.state.share.note} onChange={this.updateNote}/>
                     </Form>
