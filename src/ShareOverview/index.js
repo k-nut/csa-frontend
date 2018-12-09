@@ -1,0 +1,168 @@
+import React, {Component} from 'react';
+import {Button, Form, Header, Input, Table} from "semantic-ui-react";
+import Api from "../Api"
+import {debounce, find, sortBy} from "lodash";
+import "./ShareOverview.css";
+import 'react-datepicker/dist/react-datepicker.css';
+import toast from "../Toast";
+import MergeShare from "./MergeShare";
+import Bets from "./Bets";
+import SendEmail from "./SendEmail";
+import Deposit from "./Deposit";
+import EditDeposit from "./EditDeposit";
+
+
+class ShareOverview extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            share: {},
+            deposits: [],
+          editName: false,
+        };
+
+        this.toggleEdit = this.toggleEdit.bind(this);
+    }
+
+    componentDidMount() {
+        Api.getShare(this.props.match.params.id)
+            .then(share => {
+                this.setState({share})
+            });
+        Api.getShareDeposits(this.props.match.params.id)
+            .then(deposits => {
+                this.setState({deposits})
+            });
+    }
+
+    updateEmail = (_, v) => {
+        const share = this.state.share;
+        share.email = v.value;
+        this.setState({share: share});
+        this.sendUpdate(share);
+    };
+
+    updateNote = (_, v) => {
+        const share = this.state.share;
+        share.note = v.value;
+        this.setState({share: share});
+        this.sendUpdate(share);
+    };
+
+    updateName = (_, v) => {
+      const share = this.state.share;
+      share.name = v.value;
+      this.setState({share: share});
+    };
+
+    changeDeposit = (deposit, property, value) => {
+        const selectedDeposit = find(this.state.deposits, deposit);
+        selectedDeposit[property] = value;
+        this.setState({deposits: this.state.deposits});
+        Api.updateDeposit(selectedDeposit)
+    }
+
+    reloadDeposits = () => {
+      this.componentDidMount()
+    }
+
+    toggleEdit(){
+      this.setState({editName: !this.state.editName}, () => {
+        if (!this.state.editName) {
+          this.sendUpdate(this.state.share);
+        }
+      });
+    }
+
+    archive = () => {
+        Api.updateShare({id: this.state.share.id, archived: !this.state.share.archived}).then(() => {
+            this.props.history.push("/")
+        })
+    }
+
+    sendUpdate = debounce(share => {
+        Api.updateShare(share).then(() => {
+            toast.success("Anteil aktualisiert",  '', {timeOut: 500})
+        })
+    }, 500);
+
+    render() {
+        const deposits = sortBy(this.state.deposits, "timestamp")
+            .reverse()
+            .map(deposit => {
+                return <Deposit deposit={deposit} key={deposit.id} changeFunction={this.changeDeposit}/>
+            });
+
+        return (
+            <div>
+                <Header>
+                  {this.state.editName?
+                    <Input value={this.state.share.name}
+                           onChange={this.updateName}
+                           style={{minWidth: "50%"}}
+                    />
+                    : this.state.share.name
+                  }
+                  <Button onClick={this.toggleEdit}
+                          icon="edit"
+                          content={this.state.editName ? "Speichern" : "Bearbeiten"} />
+
+                </Header>
+                <div className="spaced" style={{display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}>
+                    <Input label="E-Mail" value={this.state.share.email || ""} onChange={this.updateEmail}/>
+                    <Form>
+                        <Form.TextArea label="Notiz" value={this.state.share.note} onChange={this.updateNote}/>
+                    </Form>
+                    <Button onClick={this.archive}
+                            color="red"
+                            icon={this.state.share.archived ? 'repeat' : 'trash'}
+                            content={this.state.share.archived ? 'Wiederherstellen' : 'Archivieren'}/>
+
+                </div>
+                <Table celled>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell> Datum </Table.HeaderCell>
+                            <Table.HeaderCell> Betrag </Table.HeaderCell>
+                            <Table.HeaderCell> Titel </Table.HeaderCell>
+                            <Table.HeaderCell> Überweiser </Table.HeaderCell>
+                            <Table.HeaderCell> Ignorieren </Table.HeaderCell>
+                            <Table.HeaderCell> Kaution </Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                        {deposits}
+                    </Table.Body>
+                    {this.state.deposits.length > 0 && (
+                        <Table.Footer>
+                            <EditDeposit personId={this.state.deposits[0].person_id}
+                                         personName={this.state.deposits[0].person_name}
+                                         updateFunction={this.reloadDeposits}/>
+                        </Table.Footer>
+                    )}
+                </Table>
+
+                { this.state.share.id && <div>
+                  <Header>Gebote</Header>
+                  <Bets shareId={this.state.share.id} />
+                </div> }
+
+                {this.state.share.id && <div>
+                    <Header>Mit anderem Anteil zusammenführen</Header>
+                    <MergeShare originalShare={this.state.share.id} history={this.props.history}/>
+                </div>
+                }
+
+                <Header> E-Mails </Header>
+
+                <SendEmail share={this.state.share} deposits={this.state.deposits}></SendEmail>
+
+
+            </div>
+        );
+    }
+}
+
+
+export default ShareOverview;
