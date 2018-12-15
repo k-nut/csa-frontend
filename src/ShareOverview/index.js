@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Form, Header, Input, Table} from "semantic-ui-react";
+import {Button, Form, Header, Table} from "semantic-ui-react";
 import Api from "../Api"
 import {debounce, find, sortBy} from "lodash";
 import "./ShareOverview.css";
