@@ -116,12 +116,16 @@ class List extends Component {
                             <Table.HeaderCell> Differenz </Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
-                    {this.state.shares.length ?
-                        <Table.Body>
-                            {shares}
-                        </Table.Body> :
-                            <Loader active inline='centered'/>
-                    }
+                    <Table.Body>
+                        {this.state.shares.length ?
+                            shares :
+                            <Table.Row>
+                                <Table.Cell colSpan={7}>
+                                    <Loader active inline='centered'/>
+                                </Table.Cell>
+                            </Table.Row>
+                        }
+                    </Table.Body>
                 </Table>
             </div>
         );
