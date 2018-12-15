@@ -86,7 +86,7 @@ class MemberList extends Component {
   }
 
   componentDidMount() {
-    Api.getMembers().then(({ members }) => this.setState({ members }));
+    Api.getMembers({active: true}).then(({ members }) => this.setState({ members }));
   }
 
   render() {

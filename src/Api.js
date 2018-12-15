@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const BASE_URL = process.env.REACT_APP_API || 'http://localhost:5000/api/v1';
 
 const fetchAuthenticated = (url, params) => {
@@ -14,6 +16,11 @@ const fetchAuthenticated = (url, params) => {
         },
     })
 };
+
+const dictToQueryString = dict => {
+  const params =_.map(dict, (value, key) => `${key}=${value}`);
+  return `?${params.join("?")}`;
+}
 
 
 const getShares = () => {
@@ -120,9 +127,11 @@ const getBets = (shareId) => {
     .then(res => res.json())
 }
 
-const getMembers = (shareId) => {
-  return fetchAuthenticated(`${BASE_URL}/members`)
-    .then(res => res.json())
+const getMembers = (filters) => {
+  const url = `${BASE_URL}/members`;
+  const queryParams = filters ? dictToQueryString(filters) : '';
+    return fetchAuthenticated(`${url}${queryParams}`)
+        .then(res => res.json())
 }
 
 const deleteBet = (shareId, betId) => {
