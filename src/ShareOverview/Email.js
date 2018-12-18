@@ -1,7 +1,7 @@
 import moment from "moment";
 import * as _ from "lodash";
 
-const getDifferenceText = (share, deposits) => {
+const getDifferenceText = (share, deposits, to) => {
   const lastDecember = moment()
     .startOf("year")
     .subtract(1, "month");
@@ -56,10 +56,10 @@ Bitte richte ab ${months[(thisMonth + 1) % 12]} einen Dauerauftrag ein.
 Vielen lieben Dank!
         `);
   const subject = window.encodeURIComponent("Solawi - Unstimmigkeiten");
-  return `mailto:${share.email}?subject=${subject}&body=${body}`;
+  return `mailto:${to.join(',')}?subject=${subject}&body=${body}`;
 };
 
-const getMissingText = share => {
+const getMissingText = (share, to) => {
   const body = window.encodeURIComponent(`Hallo!
 
 Ich bin bei der Solawi für die Kontoverwaltung zuständig.
@@ -77,7 +77,7 @@ weil wir oft mit den Umsätzen vom 29. des Monats arbeiten
 Danke dir!
         `);
   const subject = window.encodeURIComponent("Solawi - Fehlender Beitrag");
-  return `mailto:${share.email}?subject=${subject}&body=${body}`;
+  return `mailto:${to.join(',')}?subject=${subject}&body=${body}`;
 };
 
 export { getDifferenceText, getMissingText };

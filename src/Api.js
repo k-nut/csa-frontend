@@ -110,6 +110,11 @@ const getUserEmails = () => {
         .then(res => res.json())
 }
 
+const getShareEmails = (shareId) => {
+    return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/emails`)
+        .then(res => res.json())
+}
+
 const getBets = (shareId) => {
   return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/bets`)
     .then(res => res.json())
@@ -162,4 +167,5 @@ export default {
     getBets,
     deleteBet,
     updateBet,
+    getShareEmails,
 }

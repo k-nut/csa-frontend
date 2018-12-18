@@ -5,11 +5,11 @@ import {Button, Checkbox, Header} from "semantic-ui-react";
 
 class SendEmail extends Component {
     sendDifference = () => {
-        window.location.href = Email.getDifferenceText(this.props.share, this.props.deposits) + this.makeCC();
+        window.location.href = Email.getDifferenceText(this.props.share, this.props.deposits, this.state.shareEmails) + this.makeCC();
     };
 
     sendMissing = () => {
-        window.location.href = Email.getMissingText(this.props.share) + this.makeCC();
+        window.location.href = Email.getMissingText(this.props.share, this.state.shareEmails) + this.makeCC();
     };
 
 
@@ -30,16 +30,20 @@ class SendEmail extends Component {
 
     constructor() {
         super()
-        this.state = {users: [{"email": "knut@k-nut.eu"}, {"email": "peter@example.com"}]}
+        this.state = {
+            users: [],
+            shareEmails: []
+        }
     }
 
     componentDidMount() {
         Api.getUserEmails().then(response => this.setState({users: response.users}));
+        Api.getShareEmails(this.props.share.id).then(response => this.setState({shareEmails: response.emails}));
     }
 
     render() {
-        if (!this.props.share.email) {
-            return <div> Wenn du oben eine E-Mail Adresse hinzufügst kannst du hier vorformulierte E-Mails senden</div>
+        if (!this.state.shareEmails.length) {
+            return <div> Wenn den Mitgliedern im Anteil E-Mail-Adressen zugeordnet sind, kannst du hier vorformulierte E-Mails senden.</div>
         }
 
         const userList = this.state.users.map(user => {
