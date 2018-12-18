@@ -15,6 +15,7 @@ import Login from "./Login";
 import Api from "./Api"
 import Upload from "./Upload"
 import Members from "./Members";
+import MemberList from "./MemberList";
 
 function loggedIn() {
     return window.localStorage.getItem("loggedIn") === "true";
@@ -69,6 +70,7 @@ const App = () => (
                 <PrivateRoute exact path="/" component={List} />
                 <PrivateRoute exact path="/bets" component={Bets} />
                 <PrivateRoute exact path="/members" component={Members} />
+                <PrivateRoute exact path="/member-list" component={MemberList} />
                 <PrivateRoute exact path="/share/:id" component={ShareOverview} />
                 <PrivateRoute exact path="/upload" component={Upload} />
                 <PrivateRoute exact path="/logout" component={Logout} />
