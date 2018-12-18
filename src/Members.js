@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table } from "semantic-ui-react";
+import { Input, Table} from "semantic-ui-react";
 import Api from "./Api";
 import EditableField from "./EditableField";
 import EditableDropdown from "./EditableDropdown";
@@ -59,10 +59,12 @@ class Members extends Component {
     super(props);
     this.state = {
       shares: [],
-      members: []
+      members: [],
+      nameFilter: '',
     };
 
     this.loadShares = this.loadShares.bind(this);
+    this.updateNameFilter = this.updateNameFilter.bind(this);
   }
 
   async componentDidMount() {
@@ -82,9 +84,19 @@ class Members extends Component {
     this.setState({ shares: shareValues });
   }
 
+  updateNameFilter(event) {
+    this.setState({nameFilter: event.target.value});
+  }
+
   render() {
-    const { members, shares } = this.state;
-    return (
+    const { members, shares, nameFilter } = this.state;
+    const matchNameIgnoreCase = member => member.name.toLowerCase().indexOf(nameFilter.toLowerCase()) !== -1;
+    const filteredMembers = members.filter(matchNameIgnoreCase);
+
+    return <div>
+      <div className="spaced">
+        <Input value={this.state.nameFilter} onChange={this.updateNameFilter} placeholder="Filter..."/>
+      </div>
       <Table>
         <Table.Header>
           <Table.Row>
@@ -95,7 +107,7 @@ class Members extends Component {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {members.map(member => (
+          {filteredMembers.map(member => (
             <Member
               member={member}
               key={member.id}
@@ -105,7 +117,7 @@ class Members extends Component {
           ))}
         </Table.Body>
       </Table>
-    );
+    </div>
   }
 }
 
