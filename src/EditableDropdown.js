@@ -1,6 +1,7 @@
 import React, {Component} from "react";
-import {Button, Dropdown, Icon} from "semantic-ui-react";
+import { Dropdown } from "semantic-ui-react";
 import _ from "lodash";
+import {PlainButton, ButtonHoverContainer} from "./PlainButton";
 
 class EditableDropdown extends Component {
   constructor(props) {
@@ -32,19 +33,14 @@ class EditableDropdown extends Component {
 
     if (!isEditing) {
       return (
-        <div>
-          <Button icon onClick={this.toggleEdit}>
-            <Icon name="edit"/>
-          </Button>
+        <ButtonHoverContainer>
           {_.find(shares, {value}).text}
-        </div>
+          <PlainButton onClick={this.toggleEdit}>✏️</PlainButton>
+        </ButtonHoverContainer>
       );
     }
     return (
-      <div>
-        <Button icon onClick={this.save}>
-          <Icon name="check"/>
-        </Button>
+      <div style={{display: 'flex'}}>
         <Dropdown
           selection
           search
@@ -52,6 +48,7 @@ class EditableDropdown extends Component {
           options={shares}
           onChange={this.changeValue}
         />
+        <PlainButton onClick={this.save}>✅</PlainButton>
       </div>
     );
   }

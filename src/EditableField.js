@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { Button, Icon, Input } from "semantic-ui-react";
+import styled from "styled-components";
+import { Input } from "semantic-ui-react";
+import { PlainButton, ButtonHoverContainer } from "./PlainButton";
+
+const InputContainer = styled.div`
+  display: flex;
+`;
 
 class EditableField extends Component {
   constructor(props) {
@@ -29,25 +35,21 @@ class EditableField extends Component {
     const { value, isEditing } = this.state;
     if (isEditing) {
       return (
-        <div>
-          <Button icon onClick={this.save}>
-            <Icon name="check" />
-          </Button>
+        <InputContainer>
           <Input
             value={value}
             onChange={this.changeValue}
             onKeyUp={event => event.key === "Enter" && this.save()}
           />
-        </div>
+          <PlainButton onClick={this.save}>✅</PlainButton>
+        </InputContainer>
       );
     }
     return (
-      <div>
-        <Button icon onClick={this.toggleEdit}>
-          <Icon name="edit" />
-        </Button>
+      <ButtonHoverContainer>
         {value}
-      </div>
+        <PlainButton onClick={this.toggleEdit}>✏️</PlainButton>
+      </ButtonHoverContainer>
     );
   }
 }
