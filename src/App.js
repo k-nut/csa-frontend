@@ -14,6 +14,7 @@ import { Menu } from 'semantic-ui-react'
 import Login from "./Login";
 import Api from "./Api"
 import Upload from "./Upload"
+import Members from "./Members";
 
 function loggedIn() {
     return window.localStorage.getItem("loggedIn") === "true";
@@ -55,9 +56,10 @@ class Logout extends React.Component{
 const App = () => (
     <Router>
         <div>
-            <Menu widths="4">
+            <Menu widths="5">
                 <SemanticNav to="/">Übersicht</SemanticNav>
                 <SemanticNav to="/bets">Gebote</SemanticNav>
+                <SemanticNav to="/members">Mitglieder</SemanticNav>
                 <SemanticNav to="/upload">Upload</SemanticNav>
                 <SemanticNav to="/logout">Abmelden</SemanticNav>
             </Menu>
@@ -66,6 +68,7 @@ const App = () => (
                 <Route exact path="/login" component={Login} />
                 <PrivateRoute exact path="/" component={List} />
                 <PrivateRoute exact path="/bets" component={Bets} />
+                <PrivateRoute exact path="/members" component={Members} />
                 <PrivateRoute exact path="/share/:id" component={ShareOverview} />
                 <PrivateRoute exact path="/upload" component={Upload} />
                 <PrivateRoute exact path="/logout" component={Logout} />

@@ -120,12 +120,22 @@ const getBets = (shareId) => {
     .then(res => res.json())
 }
 
+const getMembers = (shareId) => {
+  return fetchAuthenticated(`${BASE_URL}/members`)
+    .then(res => res.json())
+}
+
 const deleteBet = (shareId, betId) => {
   return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/bets/${betId}`, {method: "DELETE"});
 }
 
 const updateBet = (shareId, bet) => {
   return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/bets`, {method: "POST", body: JSON.stringify(bet)})
+    .then(res => res.json())
+}
+
+const patchMember = (memberId, updatedFields) => {
+  return fetchAuthenticated(`${BASE_URL}/members/${memberId}`, {method: "PATCH", body: JSON.stringify(updatedFields)})
     .then(res => res.json())
 }
 
@@ -168,4 +178,6 @@ export default {
     deleteBet,
     updateBet,
     getShareEmails,
+    getMembers,
+    patchMember,
 }
