@@ -9,7 +9,6 @@ export const PlainButton = styled.button`
   background: transparent;
 `;
 
-
 export const ButtonHoverContainer = styled.div`
   ${PlainButton} {
     visibility: hidden;

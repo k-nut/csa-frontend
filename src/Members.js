@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Input, Table} from "semantic-ui-react";
+import { Input, Table } from "semantic-ui-react";
 import Api from "./Api";
 import EditableField from "./EditableField";
 import EditableDropdown from "./EditableDropdown";
@@ -60,7 +60,7 @@ class Members extends Component {
     this.state = {
       shares: [],
       members: [],
-      nameFilter: '',
+      nameFilter: ""
     };
 
     this.loadShares = this.loadShares.bind(this);
@@ -85,39 +85,46 @@ class Members extends Component {
   }
 
   updateNameFilter(event) {
-    this.setState({nameFilter: event.target.value});
+    this.setState({ nameFilter: event.target.value });
   }
 
   render() {
     const { members, shares, nameFilter } = this.state;
-    const matchNameIgnoreCase = member => member.name.toLowerCase().indexOf(nameFilter.toLowerCase()) !== -1;
+    const matchNameIgnoreCase = member =>
+      member.name.toLowerCase().indexOf(nameFilter.toLowerCase()) !== -1;
     const filteredMembers = members.filter(matchNameIgnoreCase);
 
-    return <div>
-      <div className="spaced">
-        <Input value={this.state.nameFilter} onChange={this.updateNameFilter} placeholder="Filter..."/>
+    return (
+      <div>
+        <div className="spaced">
+          <Input
+            value={this.state.nameFilter}
+            onChange={this.updateNameFilter}
+            placeholder="Filter..."
+          />
+        </div>
+        <Table>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Name</Table.HeaderCell>
+              <Table.HeaderCell>E-Mail</Table.HeaderCell>
+              <Table.HeaderCell>Telefon</Table.HeaderCell>
+              <Table.HeaderCell>Anteil</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {filteredMembers.map(member => (
+              <Member
+                member={member}
+                key={member.id}
+                shares={shares}
+                onChange={this.loadShares}
+              />
+            ))}
+          </Table.Body>
+        </Table>
       </div>
-      <Table>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>E-Mail</Table.HeaderCell>
-            <Table.HeaderCell>Telefon</Table.HeaderCell>
-            <Table.HeaderCell>Anteil</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {filteredMembers.map(member => (
-            <Member
-              member={member}
-              key={member.id}
-              shares={shares}
-              onChange={this.loadShares}
-            />
-          ))}
-        </Table.Body>
-      </Table>
-    </div>
+    );
   }
 }
 

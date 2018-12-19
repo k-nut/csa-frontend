@@ -6,8 +6,9 @@ import styled from "styled-components";
 import "./MemberList.print.css";
 
 const BorderCell = styled(Table.Cell)`
-    ${({stationIndex}) => stationIndex %2 === 0 && "border-left 3px solid black;"};
-    width: 5%;
+  ${({ stationIndex }) =>
+    stationIndex % 2 === 0 && "border-left 3px solid black;"};
+  width: 5%;
 `;
 
 const ShareHeader = styled.h2`
@@ -18,7 +19,7 @@ const ShareHeader = styled.h2`
     :not(:first-of-type) {
       margin-top: 0;
       page-break-before: always;
-     }
+    }
   }
 `;
 
@@ -46,12 +47,18 @@ function StationWithMembers({ members, station }) {
   });
   return (
     <Fragment>
-      <ShareHeader>{station} ({grouped.length} Anteile)</ShareHeader>
+      <ShareHeader>
+        {station} ({grouped.length} Anteile)
+      </ShareHeader>
       <Table>
         <TableHeader />
         <Table.Body>
           {withColor.map(member => (
-            <Member key={member.id} member={member} stationIndex={member.stationIndex} />
+            <Member
+              key={member.id}
+              member={member}
+              stationIndex={member.stationIndex}
+            />
           ))}
         </Table.Body>
       </Table>
@@ -62,13 +69,13 @@ function StationWithMembers({ members, station }) {
 function TableHeader() {
   return (
     <Table.Header>
-        <Table.Row>
-          <Table.HeaderCell> Nummer </Table.HeaderCell>
-          <Table.HeaderCell> Name </Table.HeaderCell>
-          <Table.HeaderCell> E-Mail </Table.HeaderCell>
-          <Table.HeaderCell> Telefon </Table.HeaderCell>
-          <Table.HeaderCell> Abholstelle </Table.HeaderCell>
-        </Table.Row>
+      <Table.Row>
+        <Table.HeaderCell> Nummer </Table.HeaderCell>
+        <Table.HeaderCell> Name </Table.HeaderCell>
+        <Table.HeaderCell> E-Mail </Table.HeaderCell>
+        <Table.HeaderCell> Telefon </Table.HeaderCell>
+        <Table.HeaderCell> Abholstelle </Table.HeaderCell>
+      </Table.Row>
     </Table.Header>
   );
 }
@@ -86,7 +93,9 @@ class MemberList extends Component {
   }
 
   componentDidMount() {
-    Api.getMembers({active: true}).then(({ members }) => this.setState({ members }));
+    Api.getMembers({ active: true }).then(({ members }) =>
+      this.setState({ members })
+    );
   }
 
   render() {
