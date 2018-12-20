@@ -34,14 +34,14 @@ class Bet extends Component {
   }
 
   render() {
-    const months = range(24).map(i => {
+    const months = range(48).map(i => {
       const date = moment("2017-01-01")
         .startOf("year")
         .add(i, "months");
       return { text: date.format("MMMM YYYY"), value: date.format() };
     });
 
-    const endMonths = range(24).map(i => {
+    const endMonths = range(48).map(i => {
       const date = moment("2017-01-01")
         .startOf("year")
         .add(i, "months")
