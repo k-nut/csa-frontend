@@ -1,9 +1,25 @@
 import React, { Component } from "react";
 import { Input, Table } from "semantic-ui-react";
+import _ from "lodash";
+import styled from "styled-components";
+
 import Api from "./Api";
 import EditableField from "./EditableField";
 import EditableDropdown from "./EditableDropdown";
-import _ from "lodash";
+import { PlainButton } from "./PlainButton";
+
+const LastCell = styled(Table.Cell)`
+  display: flex;
+  justify-content: space-between;
+
+  ${PlainButton} {
+    visibility: hidden;
+  }
+
+  &:hover ${PlainButton} {
+    visibility: visible;
+  }
+`;
 
 class Member extends Component {
   constructor(props) {
@@ -11,6 +27,7 @@ class Member extends Component {
     this.state = {
       member: props.member
     };
+    this.deleteMember = this.deleteMember.bind(this);
   }
   updateMember(field, value) {
     const { member } = this.state;
@@ -18,6 +35,11 @@ class Member extends Component {
       this.setState({ member: response.member })
     );
     this.props.onChange();
+  }
+
+  deleteMember() {
+    const { member } = this.props;
+    Api.deleteMember(member.id).then(this.props.onChange);
   }
 
   render() {
@@ -42,13 +64,14 @@ class Member extends Component {
             onSave={value => this.updateMember("phone", value)}
           />
         </Table.Cell>
-        <Table.Cell>
+        <LastCell>
           <EditableDropdown
             shares={shares}
             value={member.share_id}
             onSave={value => this.updateMember("share_id", value)}
           />
-        </Table.Cell>
+          <PlainButton onClick={this.deleteMember}> 🗑 </PlainButton>
+        </LastCell>
       </Table.Row>
     );
   }
@@ -69,6 +92,10 @@ class Members extends Component {
 
   async componentDidMount() {
     await this.loadShares();
+    await this.loadMembers();
+  }
+
+  async loadMembers() {
     const membersResponse = await Api.getMembers();
 
     this.setState({ members: _.sortBy(membersResponse.members, "name") });
@@ -118,7 +145,10 @@ class Members extends Component {
                 member={member}
                 key={member.id}
                 shares={shares}
-                onChange={this.loadShares}
+                onChange={() => {
+                  this.loadShares();
+                  this.loadMembers();
+                }}
               />
             ))}
           </Table.Body>

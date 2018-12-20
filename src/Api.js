@@ -145,6 +145,12 @@ const patchMember = (memberId, updatedFields) => {
   }).then(res => res.json());
 };
 
+const deleteMember = memberId => {
+  return fetchAuthenticated(`${BASE_URL}/members/${memberId}`, {
+    method: "DELETE"
+  });
+};
+
 const mergeShares = (share1, share2) => {
   return fetchAuthenticated(`${BASE_URL}/shares/merge`, {
     method: "post",
@@ -182,5 +188,6 @@ export default {
   updateBet,
   getShareEmails,
   getMembers,
-  patchMember
+  patchMember,
+  deleteMember
 };
