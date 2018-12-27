@@ -7,6 +7,7 @@ import Api from "./Api";
 import EditableField from "./EditableField";
 import EditableDropdown from "./EditableDropdown";
 import { PlainButton } from "./PlainButton";
+import NewMember from "./NewMember";
 
 const LastCell = styled(Table.Cell)`
   display: flex;
@@ -29,6 +30,7 @@ class Member extends Component {
     };
     this.deleteMember = this.deleteMember.bind(this);
   }
+
   updateMember(field, value) {
     const { member } = this.state;
     Api.patchMember(member.id, { [field]: value }).then(response =>
@@ -88,6 +90,7 @@ class Members extends Component {
 
     this.loadShares = this.loadShares.bind(this);
     this.updateNameFilter = this.updateNameFilter.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
   }
 
   async componentDidMount() {
@@ -152,6 +155,9 @@ class Members extends Component {
               />
             ))}
           </Table.Body>
+          <Table.Footer>
+            <NewMember onSave={this.componentDidMount} />
+          </Table.Footer>
         </Table>
       </div>
     );

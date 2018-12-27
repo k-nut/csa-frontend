@@ -151,6 +151,13 @@ const deleteMember = memberId => {
   });
 };
 
+const createMember = member => {
+  return fetchAuthenticated(`${BASE_URL}/members`, {
+    method: "POST",
+    body: JSON.stringify(member)
+  });
+};
+
 const mergeShares = (share1, share2) => {
   return fetchAuthenticated(`${BASE_URL}/shares/merge`, {
     method: "post",
@@ -189,5 +196,6 @@ export default {
   getShareEmails,
   getMembers,
   patchMember,
-  deleteMember
+  deleteMember,
+  createMember
 };
