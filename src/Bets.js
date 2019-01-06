@@ -56,7 +56,7 @@ class Bets extends Component {
 
         this.setState({
           shares: newShares,
-          stations: stations
+          stations: _.sortBy(stations, "name")
         });
       }
     );
