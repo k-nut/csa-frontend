@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import _ from "lodash";
-import { Table, Header } from "semantic-ui-react";
+import { Table } from "semantic-ui-react";
 import Api from "./Api";
 import styled from "styled-components";
 import "./MemberList.print.css";
