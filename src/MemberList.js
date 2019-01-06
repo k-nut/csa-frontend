@@ -5,7 +5,7 @@ import Api from "./Api";
 import styled from "styled-components";
 import "./MemberList.print.css";
 
-const BorderCell = styled(Table.Cell)`
+const BorderCell = styled.td`
   ${({ stationIndex }) =>
     stationIndex % 2 === 0 && "border-left 3px solid black;"};
   width: 5%;
