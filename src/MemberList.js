@@ -106,7 +106,11 @@ class MemberList extends Component {
       <StationWithMembers members={value} station={key} key={key} />
     ));
 
-    return <Container>{_.sortBy(stations, "key")}</Container>;
+    return (
+      <Container>
+        {_.sortBy(stations, station => station.key.toLowerCase())}
+      </Container>
+    );
   }
 }
 
