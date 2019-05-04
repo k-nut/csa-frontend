@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { debounce, range } from "lodash";
 import moment from "moment";
-import { Dropdown, Input } from "semantic-ui-react";
+import { Button, Dropdown, Input } from "semantic-ui-react";
+import DatePicker from "react-datepicker/es";
 
 class Bet extends Component {
   constructor(props) {
@@ -17,16 +18,19 @@ class Bet extends Component {
     this.changeValue = this.changeValue.bind(this);
   }
 
-  changeStart(_, data) {
-    this.setState({ start_date: data.value }, this.update);
+  changeStart(start_date) {
+    this.setState(
+      { start_date: start_date.format().slice(0, 10) },
+      this.update
+    );
   }
 
   update = debounce(() => {
     this.props.updateCallback(this.state);
   }, 500);
 
-  changeEnd(_, data) {
-    this.setState({ end_date: data.value }, this.update);
+  changeEnd(end_date) {
+    this.setState({ end_date: end_date.format().slice(0, 10) }, this.update);
   }
 
   changeValue(event) {
@@ -35,46 +39,50 @@ class Bet extends Component {
 
   render() {
     const months = range(48).map(i => {
-      const date = moment("2017-01-01")
-        .startOf("year")
+      return moment
+        .utc("2017-01-01")
+        .startOf("day")
         .add(i, "months");
-      return { text: date.format("MMMM YYYY"), value: date.format() };
     });
 
+    const halfMonths = range(48).map(i => {
+      return moment
+        .utc("2017-01-15")
+        .startOf("day")
+        .add(i, "months");
+    });
+    const startDates = [...months, ...halfMonths];
+
     const endMonths = range(48).map(i => {
-      const date = moment("2017-01-01")
-        .startOf("year")
+      return moment
+        .utc("2017-01-01")
         .add(i, "months")
         .endOf("month")
         .startOf("day");
-      return { text: date.format("MMMM YYYY"), value: date.format() };
     });
-
-    endMonths.push({ text: "--", value: null });
 
     const { start_date, end_date, value } = this.state;
 
     return (
-      <div>
+      <div style={{ display: "flex" }}>
         <label>
-          {" "}
           Start:
-          <Dropdown
-            selection
-            name="start_date"
-            defaultValue={moment(start_date).format()}
+          <DatePicker
+            dateFormat="DD.MM.YYYY"
+            selected={start_date && moment(start_date)}
+            includeDates={startDates}
             onChange={this.changeStart}
-            options={months}
+            placeholderText="Startdatum"
           />
         </label>
-        <label>
-          {" "}
+        <label style={{ margin: "0 10px" }}>
           Ende:
-          <Dropdown
-            selection
-            defaultValue={moment(end_date).format()}
+          <DatePicker
+            dateFormat="DD.MM.YYYY"
+            selected={end_date && moment(end_date)}
+            includeDates={endMonths}
             onChange={this.changeEnd}
-            options={endMonths}
+            placeholderText="Enddatum"
           />
         </label>
         <label>
@@ -83,10 +91,10 @@ class Bet extends Component {
           <Input type="number" value={value} onChange={this.changeValue} />
         </label>
         {this.props.bet.id && (
-          <button onClick={() => this.props.deleteCallback(this.props.bet.id)}>
-            {" "}
-            Löschen{" "}
-          </button>
+          <Button
+            onClick={() => this.props.deleteCallback(this.props.bet.id)}
+            content="Löschen"
+          />
         )}
       </div>
     );
