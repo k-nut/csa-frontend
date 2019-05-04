@@ -4,6 +4,7 @@ import { Table } from "semantic-ui-react";
 import Api from "./Api";
 import styled from "styled-components";
 import "./MemberList.print.css";
+import moment from "moment";
 
 const BorderCell = styled.td`
   ${({ stationIndex }) =>
@@ -30,7 +31,11 @@ function Member({ member, stationIndex }) {
       <Table.Cell> {member.name}</Table.Cell>
       <Table.Cell> {member.email} </Table.Cell>
       <Table.Cell> {member.phone} </Table.Cell>
-      <Table.Cell> {member.station_name} </Table.Cell>
+      <Table.Cell>
+        {member.join_date
+          ? moment(member.join_date).format("DD. MMM YYYY")
+          : ""}
+      </Table.Cell>
     </Table.Row>
   );
 }
@@ -74,7 +79,7 @@ function TableHeader() {
         <Table.HeaderCell> Name </Table.HeaderCell>
         <Table.HeaderCell> E-Mail </Table.HeaderCell>
         <Table.HeaderCell> Telefon </Table.HeaderCell>
-        <Table.HeaderCell> Abholstelle </Table.HeaderCell>
+        <Table.HeaderCell> Beitrittsdatum </Table.HeaderCell>
       </Table.Row>
     </Table.Header>
   );
