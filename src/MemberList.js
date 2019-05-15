@@ -5,6 +5,10 @@ import Api from "./Api";
 import styled from "styled-components";
 import "./MemberList.print.css";
 import moment from "moment";
+import sortBy from "lodash/fp/sortBy";
+import groupBy from "lodash/fp/groupBy";
+import values from "lodash/fp/values";
+import flow from "lodash/fp/flow";
 
 const BorderCell = styled.td`
   ${({ stationIndex }) =>
@@ -41,15 +45,14 @@ function Member({ member, stationIndex }) {
 }
 
 function StationWithMembers({ members, station }) {
-  const byShare = _.groupBy(members, "share_id");
-  const grouped = _.values(byShare);
-  const withColor = _.flatMap(grouped, (group, index) => {
-    return group.map(member =>
-      Object.assign({}, member, {
-        stationIndex: index
-      })
-    );
-  });
+  const grouped = flow(
+    groupBy("share_id"),
+    values,
+    sortBy(x => x[0].join_date)
+  )(members);
+  const withColor = _.flatMap(grouped, (group, index) =>
+    group.map(member => ({ ...member, stationIndex: index }))
+  );
   return (
     <Fragment>
       <ShareHeader>
