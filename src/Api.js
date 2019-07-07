@@ -1,20 +1,27 @@
 import _ from "lodash";
+import AuthState from "./AuthState";
 
 const BASE_URL = process.env.REACT_APP_API || "http://localhost:5000/api/v1";
+const authState = new AuthState();
 
 const fetchAuthenticated = (url, params) => {
   return fetch(url, {
     ...{
       method: "GET",
-      credentials: "include",
       mode: "cors",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Cache: "no-cache"
+        Cache: "no-cache",
+        Authorization: `Bearer ${authState.getToken()}`
       },
       ...params
     }
+  }).then(response => {
+    if (response.status === 401) {
+      authState.setToken(null);
+    }
+    return response;
   });
 };
 
@@ -72,8 +79,13 @@ const getStations = () => {
 };
 
 const login = (email, password) => {
-  return fetchAuthenticated(`${BASE_URL}/login`, {
+  return fetch(`${BASE_URL}/login`, {
+    mode: "cors",
     method: "post",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({ email, password })
   }).then(res => {
     if (res.status !== 200) {
@@ -84,7 +96,7 @@ const login = (email, password) => {
 };
 
 const logout = () => {
-  return fetchAuthenticated(`${BASE_URL}/logout`).then(res => res.json());
+  authState.setToken(null);
 };
 
 const getShare = id => {

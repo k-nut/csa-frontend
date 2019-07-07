@@ -3,6 +3,7 @@ import { Form } from "semantic-ui-react";
 
 import Api from "./Api";
 import toast from "./Toast";
+import AuthState from "./AuthState";
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -19,14 +20,15 @@ export default class Login extends React.Component {
   }
 
   login() {
+    const authState = new AuthState();
+
     Api.login(this.state.email, this.state.password)
-      .then(() => {
-        window.localStorage.setItem("loggedIn", true);
+      .then(({ access_token }) => {
+        authState.setToken(access_token);
         this.props.history.push("/");
       })
       .catch(() => {
         toast.error("Login fehlgeschlagen");
-        window.localStorage.clear();
       });
   }
 

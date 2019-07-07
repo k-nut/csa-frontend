@@ -12,13 +12,15 @@ import Bets from "./Bets";
 import ShareOverview from "./ShareOverview";
 import { Menu } from "semantic-ui-react";
 import Login from "./Login";
-import Api from "./Api";
 import Upload from "./Upload";
 import Members from "./Members";
 import MemberList from "./MemberList";
+import AuthState from "./AuthState";
 
 function loggedIn() {
-  return window.localStorage.getItem("loggedIn") === "true";
+  const authState = new AuthState();
+  const token = authState.getToken();
+  return !!token;
 }
 
 class SemanticNav extends React.Component {
@@ -47,10 +49,9 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 
 class Logout extends React.Component {
   componentDidMount() {
-    Api.logout().then(() => {
-      window.localStorage.clear();
-      this.props.history.push("/");
-    });
+    const authState = new AuthState();
+    authState.setToken(null);
+    this.props.history.push("/");
   }
 
   render() {
