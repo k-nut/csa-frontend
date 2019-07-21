@@ -3,12 +3,11 @@ import _ from "lodash";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
-import { Input, Table, Dropdown, Loader } from "semantic-ui-react";
+import {Input, Table, Dropdown, Loader, Checkbox} from "semantic-ui-react";
 import Api from "./Api";
 import toast from "./Toast";
 import { filterNameAndStation } from "./Utils";
 import * as queryString from "query-string";
-import Checkbox from "semantic-ui-react/dist/es/modules/Checkbox/Checkbox";
 
 class Bets extends Component {
   constructor(props) {
