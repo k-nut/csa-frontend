@@ -183,7 +183,9 @@ const uploadFile = file => {
   return fetchAuthenticated(`${BASE_URL}/deposits/upload`, {
     method: "post",
     body: formData,
-    headers: {}
+    headers: {
+      Authorization: `Bearer ${authState.getToken()}`
+    }
   }).then(res => res.json());
 };
 
