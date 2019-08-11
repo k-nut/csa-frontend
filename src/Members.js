@@ -121,6 +121,7 @@ class Members extends Component {
   render() {
     const { members, shares, nameFilter } = this.state;
     const matchNameIgnoreCase = member =>
+      member.name &&
       member.name.toLowerCase().indexOf(nameFilter.toLowerCase()) !== -1;
     const filteredMembers = members.filter(matchNameIgnoreCase);
 

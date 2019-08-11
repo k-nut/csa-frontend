@@ -11,7 +11,9 @@ function Share(props) {
   return (
     <Table.Row className="share" warning={props.share.archived}>
       <Table.Cell>
-        <Link to={`/share/${props.share.id}`}>{props.share.name}</Link>
+        <Link to={`/share/${props.share.id}`}>
+          {props.share.name || <i> Unbenannter Anteil </i>}
+        </Link>
       </Table.Cell>
       <Table.Cell> {props.share.note} </Table.Cell>
       <Table.Cell> {props.share.station_name} </Table.Cell>
