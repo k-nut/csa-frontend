@@ -12,10 +12,10 @@ export default class AuthState {
   }
 
   setToken(token) {
-    this.accessToken = token;
+    localStorage.setItem("authToken", token);
   }
 
   getToken() {
-    return this.accessToken;
+    return localStorage.getItem("authToken");
   }
 }
