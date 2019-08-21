@@ -19,7 +19,7 @@ const fetchAuthenticated = (url, params) => {
     }
   }).then(response => {
     if (response.status === 401) {
-      authState.setToken(null);
+      authState.clearToken();
     }
     return response;
   });
@@ -96,7 +96,7 @@ const login = (email, password) => {
 };
 
 const logout = () => {
-  authState.setToken(null);
+  authState.clearToken();
 };
 
 const getShare = id => {

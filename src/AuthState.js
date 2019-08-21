@@ -7,8 +7,11 @@ export default class AuthState {
       return AuthState.instance;
     }
 
-    this.accessToken = null;
     AuthState.instance = this;
+  }
+
+  clearToken() {
+    localStorage.removeItem("authToken");
   }
 
   setToken(token) {
@@ -16,6 +19,12 @@ export default class AuthState {
   }
 
   getToken() {
-    return localStorage.getItem("authToken");
+    const token = localStorage.getItem("authToken");
+    // Clean up string null value that might have gotten into local storage
+    if (token === "null") {
+      this.clearToken();
+      return null;
+    }
+    return token;
   }
 }

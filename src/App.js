@@ -50,7 +50,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 class Logout extends React.Component {
   componentDidMount() {
     const authState = new AuthState();
-    authState.setToken(null);
+    authState.clearToken();
     this.props.history.push("/");
   }
 
