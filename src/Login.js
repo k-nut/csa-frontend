@@ -23,8 +23,8 @@ export default class Login extends React.Component {
     const authState = new AuthState();
 
     Api.login(this.state.email, this.state.password)
-      .then(({ access_token }) => {
-        authState.setToken(access_token);
+      .then(({ access_token, id }) => {
+        authState.setToken(access_token, id);
         this.props.history.push("/");
       })
       .catch(() => {

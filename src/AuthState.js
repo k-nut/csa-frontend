@@ -12,10 +12,16 @@ export default class AuthState {
 
   clearToken() {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("authId");
   }
 
-  setToken(token) {
+  setToken(token, id) {
     localStorage.setItem("authToken", token);
+    localStorage.setItem("authId", id);
+  }
+
+  getId() {
+    return localStorage.getItem('authId');
   }
 
   getToken() {
