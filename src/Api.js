@@ -189,6 +189,14 @@ const uploadFile = file => {
   }).then(res => res.json());
 };
 
+const changePassword = password => {
+  const userId = authState.getId();
+  return fetchAuthenticated(`${BASE_URL}/users/${userId}`, {
+    method: "patch",
+    body: JSON.stringify({ password })
+  });
+};
+
 export default {
   getShares,
   getStations,
@@ -211,5 +219,6 @@ export default {
   getMembers,
   patchMember,
   deleteMember,
-  createMember
+  createMember,
+  changePassword
 };

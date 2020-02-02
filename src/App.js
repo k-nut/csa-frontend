@@ -16,6 +16,7 @@ import Upload from "./Upload";
 import Members from "./Members";
 import MemberList from "./MemberList";
 import AuthState from "./AuthState";
+import PasswordChange from "./Password";
 
 function loggedIn() {
   const authState = new AuthState();
@@ -79,6 +80,7 @@ const App = () => (
         <PrivateRoute exact path="/share/:id" component={ShareOverview} />
         <PrivateRoute exact path="/upload" component={Upload} />
         <PrivateRoute exact path="/logout" component={Logout} />
+        <PrivateRoute exact path="/password" component={PasswordChange} />
       </main>
     </div>
   </Router>

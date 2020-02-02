@@ -21,7 +21,7 @@ export default class AuthState {
   }
 
   getId() {
-    return localStorage.getItem('authId');
+    return localStorage.getItem("authId");
   }
 
   getToken() {
