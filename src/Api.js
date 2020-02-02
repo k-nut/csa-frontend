@@ -47,7 +47,7 @@ const updateShare = share => {
     ? `${BASE_URL}/shares/${share.id}`
     : `${BASE_URL}/shares`;
   return fetchAuthenticated(url, {
-    method: "post",
+    method: "POST",
     body: JSON.stringify(share)
   })
     .then(res => res.json())
@@ -56,7 +56,7 @@ const updateShare = share => {
 
 const updateDeposit = deposit => {
   return fetchAuthenticated(`${BASE_URL}/deposits/${deposit.id}`, {
-    method: "post",
+    method: "POST",
     body: JSON.stringify(deposit)
   })
     .then(res => res.json())
@@ -65,7 +65,7 @@ const updateDeposit = deposit => {
 
 const addDeposit = deposit => {
   return fetchAuthenticated(`${BASE_URL}/deposits/`, {
-    method: "put",
+    method: "PUT",
     body: JSON.stringify(deposit)
   })
     .then(res => res.json())
@@ -81,7 +81,7 @@ const getStations = () => {
 const login = (email, password) => {
   return fetch(`${BASE_URL}/login`, {
     mode: "cors",
-    method: "post",
+    method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"
@@ -172,7 +172,7 @@ const createMember = member => {
 
 const mergeShares = (share1, share2) => {
   return fetchAuthenticated(`${BASE_URL}/shares/merge`, {
-    method: "post",
+    method: "POST",
     body: JSON.stringify({ share1, share2 })
   }).then(res => res.json());
 };
@@ -181,7 +181,7 @@ const uploadFile = file => {
   const formData = new FormData();
   formData.append("file", file);
   return fetchAuthenticated(`${BASE_URL}/deposits/upload`, {
-    method: "post",
+    method: "POST",
     body: formData,
     headers: {
       Authorization: `Bearer ${authState.getToken()}`
@@ -192,7 +192,7 @@ const uploadFile = file => {
 const changePassword = password => {
   const userId = authState.getId();
   return fetchAuthenticated(`${BASE_URL}/users/${userId}`, {
-    method: "patch",
+    method: "PATCH",
     body: JSON.stringify({ password })
   });
 };
