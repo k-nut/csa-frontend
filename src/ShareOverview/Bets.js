@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Api from "../Api";
-import toast from "../Toast";
+import Api from "../services/Api";
+import toast from "../components/Toast";
 import Bet from "./Bet";
 
 import styled from "styled-components";

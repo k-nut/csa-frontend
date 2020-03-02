@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import * as Email from "./Email";
-import Api from "../Api";
+import Api from "../services/Api";
 import { Button, Checkbox, Header } from "semantic-ui-react";
 
 class SendEmail extends Component {

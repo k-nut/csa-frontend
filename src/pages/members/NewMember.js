@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Api from "./Api";
+import Api from "../../services/Api";
 import { Table } from "semantic-ui-react";
 
 class NewMember extends Component {

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import moment from "moment";
-import Api from "../Api";
+import Api from "../services/Api";
 import Table from "semantic-ui-react/dist/es/collections/Table/Table";
 import DatePicker from "react-datepicker/es";
 import { Button, Checkbox, Input } from "semantic-ui-react";

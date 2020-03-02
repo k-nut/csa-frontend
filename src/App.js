@@ -7,16 +7,15 @@ import {
   NavLink,
   Redirect
 } from "react-router-dom";
-import List from "./List";
-import Bets from "./Bets";
+import List from "./pages/payment-status-list/List";
+import Bets from "./pages/bets/Bets";
 import ShareOverview from "./ShareOverview";
 import { Menu } from "semantic-ui-react";
-import Login from "./Login";
-import Upload from "./Upload";
-import Members from "./Members";
-import MemberList from "./MemberList";
-import AuthState from "./AuthState";
-import PasswordChange from "./Password";
+import Login from "./pages/login/Login";
+import Members from "./pages/members/Members";
+import MemberList from "./pages/member-list/MemberList";
+import AuthState from "./services/AuthState";
+import PasswordChange from "./pages/change-password/Password";
 
 function loggedIn() {
   const authState = new AuthState();
@@ -63,11 +62,10 @@ class Logout extends React.Component {
 const App = () => (
   <Router>
     <div>
-      <Menu widths="5">
+      <Menu widths="4">
         <SemanticNav to="/">Übersicht</SemanticNav>
         <SemanticNav to="/bets">Gebote</SemanticNav>
         <SemanticNav to="/members">Mitglieder</SemanticNav>
-        <SemanticNav to="/upload">Upload</SemanticNav>
         <SemanticNav to="/logout">Abmelden</SemanticNav>
       </Menu>
 
@@ -78,7 +76,6 @@ const App = () => (
         <PrivateRoute exact path="/members" component={Members} />
         <PrivateRoute exact path="/member-list" component={MemberList} />
         <PrivateRoute exact path="/share/:id" component={ShareOverview} />
-        <PrivateRoute exact path="/upload" component={Upload} />
         <PrivateRoute exact path="/logout" component={Logout} />
         <PrivateRoute exact path="/password" component={PasswordChange} />
       </main>
