@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Form } from "semantic-ui-react";
 
-import Api from "./Api";
-import toast from "./Toast";
+import Api from "../../services/Api";
+import toast from "../../components/Toast";
 import styled from "styled-components";
 
 const Container = styled.div`

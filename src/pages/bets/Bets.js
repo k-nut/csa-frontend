@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import moment from "moment";
-import { Link } from "react-router-dom";
 
-import { Input, Table, Dropdown, Loader, Checkbox } from "semantic-ui-react";
-import Api from "./Api";
-import toast from "./Toast";
-import { filterNameAndStation } from "./Utils";
+import { Checkbox, Input, Loader, Table } from "semantic-ui-react";
+import Api from "../../services/Api";
+import toast from "../../components/Toast";
+import { filterNameAndStation } from "../../services/Utils";
 import * as queryString from "query-string";
+import { Bet } from "./Bet";
 
 class Bets extends Component {
   constructor(props) {
@@ -170,70 +169,4 @@ class Bets extends Component {
   }
 }
 
-function BetDuration({ bet }) {
-  if (bet.end_date) {
-    return (
-      <div>
-        {moment(bet.start_date).format("MMM YY")} -{" "}
-        {moment(bet.end_date).format("MMM YY")}: <b>{bet.value}€</b>
-      </div>
-    );
-  }
-  return (
-    <div>
-      Ab {moment(bet.start_date).format("MMM YY")}: <b>{bet.value}€</b>
-    </div>
-  );
-}
-
-function Bet({ share, stations, changeProperty }) {
-  const changeNote = _.debounce((_, v) => {
-    changeProperty(share, "note", v.value);
-  }, 500);
-
-  const changeName = _.debounce((_, v) => {
-    changeProperty(share, "name", v.value);
-  }, 500);
-
-  const changeStation = (_, values) => {
-    changeProperty(share, "station_id", values.value);
-  };
-
-  stations = stations.map(station => {
-    station.value = station.id;
-    station.text = station.name;
-    return station;
-  });
-
-  return (
-    <Table.Row warning={share.archived}>
-      <Table.Cell>
-        {share.id ? (
-          <Link to={`/share/${share.id}`}>{share.name}</Link>
-        ) : (
-          <div>
-            {" "}
-            Neu: <Input defaultValue={share.name} onChange={changeName} />
-          </div>
-        )}
-      </Table.Cell>
-      <Table.Cell>
-        <Input defaultValue={share.note} onChange={changeNote} />
-      </Table.Cell>
-      <Table.Cell>
-        <Dropdown
-          selection
-          defaultValue={share.station_id}
-          options={stations}
-          onChange={changeStation}
-        />
-      </Table.Cell>
-      <Table.Cell>
-        {share.bets
-          ? share.bets.map(bet => <BetDuration key={bet.id} bet={bet} />)
-          : ""}
-      </Table.Cell>
-    </Table.Row>
-  );
-}
 export default Bets;

@@ -1,9 +1,9 @@
 import React from "react";
 import { Form } from "semantic-ui-react";
 
-import Api from "./Api";
-import toast from "./Toast";
-import AuthState from "./AuthState";
+import Api from "../../services/Api";
+import toast from "../../components/Toast";
+import AuthState from "../../services/AuthState";
 
 export default class Login extends React.Component {
   constructor(props) {

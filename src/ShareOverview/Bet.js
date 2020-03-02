@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { debounce, range } from "lodash";
 import moment from "moment";
-import { Button, Dropdown, Input } from "semantic-ui-react";
+import { Button, Input } from "semantic-ui-react";
 import DatePicker from "react-datepicker/es";
 
 class Bet extends Component {

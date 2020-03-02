@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Button, Form, Header, Table } from "semantic-ui-react";
-import Api from "../Api";
+import Api from "../services/Api";
 import { debounce, find, sortBy } from "lodash";
 import "./ShareOverview.css";
 import "react-datepicker/dist/react-datepicker.css";
-import toast from "../Toast";
+import toast from "../components/Toast";
 import MergeShare from "./MergeShare";
 import Bets from "./Bets";
 import SendEmail from "./SendEmail";
