@@ -38,14 +38,14 @@ class Bet extends Component {
   }
 
   render() {
-    const months = range(48).map(i => {
+    const months = range(72).map(i => {
       return moment
         .utc("2017-01-01")
         .startOf("day")
         .add(i, "months");
     });
 
-    const halfMonths = range(48).map(i => {
+    const halfMonths = range(72).map(i => {
       return moment
         .utc("2017-01-15")
         .startOf("day")
@@ -53,7 +53,7 @@ class Bet extends Component {
     });
     const startDates = [...months, ...halfMonths];
 
-    const endMonths = range(48).map(i => {
+    const endMonths = range(72).map(i => {
       return moment
         .utc("2017-01-01")
         .add(i, "months")
