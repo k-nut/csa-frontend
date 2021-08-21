@@ -35,7 +35,11 @@ class EditableDropdown extends Component {
       return (
         <ButtonHoverContainer>
           {_.find(shares, { value }).text}
-          <PlainButton onClick={this.toggleEdit}>✏️</PlainButton>
+          <PlainButton onClick={this.toggleEdit}>
+            <span role="img" aria-label="bearbeiten">
+              ✏️
+            </span>
+          </PlainButton>
         </ButtonHoverContainer>
       );
     }
@@ -48,7 +52,11 @@ class EditableDropdown extends Component {
           options={shares}
           onChange={this.changeValue}
         />
-        <PlainButton onClick={this.save}>✅</PlainButton>
+        <PlainButton onClick={this.save}>
+          <span role="img" aria-label="speichern">
+            ✅
+          </span>
+        </PlainButton>
       </div>
     );
   }
