@@ -39,16 +39,24 @@ class EditableField extends Component {
           <Input
             value={value}
             onChange={this.changeValue}
-            onKeyUp={event => event.key === "Enter" && this.save()}
+            onKeyUp={(event) => event.key === "Enter" && this.save()}
           />
-          <PlainButton onClick={this.save}>✅</PlainButton>
+          <PlainButton onClick={this.save}>
+            <span role="img" aria-label="bestätigen">
+              ✅
+            </span>
+          </PlainButton>
         </InputContainer>
       );
     }
     return (
       <ButtonHoverContainer>
         {value}
-        <PlainButton onClick={this.toggleEdit}>✏️</PlainButton>
+        <PlainButton onClick={this.toggleEdit}>
+          <span role="img" aria-label="speichern">
+            ✏️
+          </span>
+        </PlainButton>
       </ButtonHoverContainer>
     );
   }
