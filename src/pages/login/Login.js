@@ -1,61 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form } from "semantic-ui-react";
 
 import Api from "../../services/Api";
 import toast from "../../components/Toast";
 import AuthState from "../../services/AuthState";
 
-export default class Login extends React.Component {
-  constructor(props) {
-    super(props);
+export default function Login({ history }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const authState = new AuthState();
 
-    this.state = {
-      email: "",
-      password: ""
-    };
-
-    this.login = this.login.bind(this);
-    this.setEmail = this.setEmail.bind(this);
-    this.setPassword = this.setPassword.bind(this);
-  }
-
-  login() {
-    const authState = new AuthState();
-
-    Api.login(this.state.email, this.state.password)
+  const login = () => {
+    setIsLoading(true);
+    Api.login(email, password)
       .then(({ access_token, id }) => {
         authState.setToken(access_token, id);
-        this.props.history.push("/");
+        history.push("/");
       })
       .catch(() => {
         toast.error("Login fehlgeschlagen");
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-  }
+  };
 
-  setEmail(event) {
-    this.setState({ email: event.target.value });
-  }
-
-  setPassword(event) {
-    this.setState({ password: event.target.value });
-  }
-
-  render() {
-    return (
-      <Form onSubmit={this.login}>
-        <Form.Input
-          label="E-Mail"
-          onChange={this.setEmail}
-          value={this.state.email}
-        />
-        <Form.Input
-          label="Password"
-          type="password"
-          onChange={this.setPassword}
-          value={this.state.password}
-        />
-        <Form.Button type="submit">Anmelden</Form.Button>
-      </Form>
-    );
-  }
+  return (
+    <Form onSubmit={login}>
+      <Form.Input
+        label="E-Mail"
+        onChange={(event) => setEmail(event.target.value)}
+        value={email}
+      />
+      <Form.Input
+        label="Password"
+        type="password"
+        onChange={(event) => setPassword(event.target.value)}
+        value={password}
+      />
+      <Form.Button type="submit" loading={isLoading}>
+        Anmelden
+      </Form.Button>
+    </Form>
+  );
 }
