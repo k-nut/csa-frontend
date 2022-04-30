@@ -13,69 +13,76 @@ const fetchAuthenticated = (url, params) => {
         Accept: "application/json",
         "Content-Type": "application/json",
         Cache: "no-cache",
-        Authorization: `Bearer ${authState.getToken()}`
+        Authorization: `Bearer ${authState.getToken()}`,
       },
-      ...params
-    }
-  }).then(response => {
-    if (response.status === 401) {
-      authState.clearToken();
-    }
-    return response;
-  });
+      ...params,
+    },
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        authState.clearToken();
+      }
+      return response;
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response);
+      }
+      return response;
+    });
 };
 
-const dictToQueryString = dict => {
+const dictToQueryString = (dict) => {
   const params = _.map(dict, (value, key) => `${key}=${value}`);
   return `?${params.join("?")}`;
 };
 
 const getShares = () => {
   return fetchAuthenticated(`${BASE_URL}/shares`)
-    .then(res => res.json())
-    .then(json => json.shares);
+    .then((res) => res.json())
+    .then((json) => json.shares);
 };
 
 const getSharesPayments = () => {
   return fetchAuthenticated(`${BASE_URL}/shares/payment_status`)
-    .then(res => res.json())
-    .then(json => json.shares);
+    .then((res) => res.json())
+    .then((json) => json.shares);
 };
 
-const updateShare = share => {
+const updateShare = (share) => {
   const url = share.id
     ? `${BASE_URL}/shares/${share.id}`
     : `${BASE_URL}/shares`;
   return fetchAuthenticated(url, {
     method: "POST",
-    body: JSON.stringify(share)
+    body: JSON.stringify(share),
   })
-    .then(res => res.json())
-    .then(json => json.share);
+    .then((res) => res.json())
+    .then((json) => json.share);
 };
 
-const updateDeposit = deposit => {
+const updateDeposit = (deposit) => {
   return fetchAuthenticated(`${BASE_URL}/deposits/${deposit.id}`, {
     method: "POST",
-    body: JSON.stringify(deposit)
+    body: JSON.stringify(deposit),
   })
-    .then(res => res.json())
-    .then(json => json.deposit);
+    .then((res) => res.json())
+    .then((json) => json.deposit);
 };
 
-const addDeposit = deposit => {
+const addDeposit = (deposit) => {
   return fetchAuthenticated(`${BASE_URL}/deposits/`, {
     method: "PUT",
-    body: JSON.stringify(deposit)
+    body: JSON.stringify(deposit),
   })
-    .then(res => res.json())
-    .then(json => json.deposit);
+    .then((res) => res.json())
+    .then((json) => json.deposit);
 };
 
 const getStations = () => {
   return fetchAuthenticated(`${BASE_URL}/stations`)
-    .then(res => res.json())
-    .then(json => json.stations);
+    .then((res) => res.json())
+    .then((json) => json.stations);
 };
 
 const login = (email, password) => {
@@ -84,10 +91,10 @@ const login = (email, password) => {
     method: "POST",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, password })
-  }).then(res => {
+    body: JSON.stringify({ email, password }),
+  }).then((res) => {
     if (res.status !== 200) {
       throw new Error("Login failed");
     }
@@ -99,101 +106,103 @@ const logout = () => {
   authState.clearToken();
 };
 
-const getShare = id => {
+const getShare = (id) => {
   return fetchAuthenticated(`${BASE_URL}/shares/${id}`)
-    .then(res => res.json())
-    .then(json => json.share);
+    .then((res) => res.json())
+    .then((json) => json.share);
 };
 
-const getShareDeposits = id => {
+const getShareDeposits = (id) => {
   return fetchAuthenticated(`${BASE_URL}/shares/${id}/deposits`)
-    .then(res => res.json())
-    .then(json => json.deposits);
+    .then((res) => res.json())
+    .then((json) => json.deposits);
 };
 
-const getPerson = id => {
-  return fetchAuthenticated(`${BASE_URL}/person/${id}`).then(res => res.json());
+const getPerson = (id) => {
+  return fetchAuthenticated(`${BASE_URL}/person/${id}`).then((res) =>
+    res.json()
+  );
 };
 
 const getUserEmails = () => {
-  return fetchAuthenticated(`${BASE_URL}/users`).then(res => res.json());
+  return fetchAuthenticated(`${BASE_URL}/users`).then((res) => res.json());
 };
 
-const getShareEmails = shareId => {
-  return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/emails`).then(res =>
+const getShareEmails = (shareId) => {
+  return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/emails`).then(
+    (res) => res.json()
+  );
+};
+
+const getBets = (shareId) => {
+  return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/bets`).then((res) =>
     res.json()
   );
 };
 
-const getBets = shareId => {
-  return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/bets`).then(res =>
-    res.json()
-  );
-};
-
-const getMembers = filters => {
+const getMembers = (filters) => {
   const url = `${BASE_URL}/members`;
   const queryParams = filters ? dictToQueryString(filters) : "";
-  return fetchAuthenticated(`${url}${queryParams}`).then(res => res.json());
+  return fetchAuthenticated(`${url}${queryParams}`).then((res) => res.json());
 };
 
 const deleteBet = (shareId, betId) => {
   return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/bets/${betId}`, {
-    method: "DELETE"
+    method: "DELETE",
   });
 };
 
 const updateBet = (shareId, bet) => {
   return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/bets`, {
     method: "POST",
-    body: JSON.stringify(bet)
-  }).then(res => res.json());
+    body: JSON.stringify(bet),
+  }).then((res) => res.json());
 };
 
 const patchMember = (memberId, updatedFields) => {
   return fetchAuthenticated(`${BASE_URL}/members/${memberId}`, {
     method: "PATCH",
-    body: JSON.stringify(updatedFields)
-  }).then(res => res.json());
+    body: JSON.stringify(updatedFields),
+  }).then((res) => res.json());
 };
 
-const deleteMember = memberId => {
+const deleteMember = (memberId) => {
   return fetchAuthenticated(`${BASE_URL}/members/${memberId}`, {
-    method: "DELETE"
+    method: "DELETE",
   });
 };
 
-const createMember = member => {
+const createMember = (member) => {
   return fetchAuthenticated(`${BASE_URL}/members`, {
     method: "POST",
-    body: JSON.stringify(member)
+    body: JSON.stringify(member),
   });
 };
 
 const mergeShares = (share1, share2) => {
   return fetchAuthenticated(`${BASE_URL}/shares/merge`, {
     method: "POST",
-    body: JSON.stringify({ share1, share2 })
-  }).then(res => res.json());
+    body: JSON.stringify({ share1, share2 }),
+  }).then((res) => res.json());
 };
 
-const uploadFile = file => {
+const uploadFile = (file) => {
   const formData = new FormData();
   formData.append("file", file);
   return fetchAuthenticated(`${BASE_URL}/deposits/upload`, {
     method: "POST",
     body: formData,
     headers: {
-      Authorization: `Bearer ${authState.getToken()}`
-    }
-  }).then(res => res.json());
+      Authorization: `Bearer ${authState.getToken()}`,
+    },
+  }).then((res) => res.json());
 };
 
-const changePassword = password => {
+const changePassword = (password) => {
   const userId = authState.getId();
   return fetchAuthenticated(`${BASE_URL}/users/${userId}`, {
     method: "PATCH",
-    body: JSON.stringify({ password })
+    body: JSON.stringify({ password }),
   });
 };
 
@@ -220,5 +229,5 @@ export default {
   patchMember,
   deleteMember,
   createMember,
-  changePassword
+  changePassword,
 };
