@@ -4,12 +4,19 @@ import moment from "moment";
 import { Button, Input } from "semantic-ui-react";
 import DatePicker from "react-datepicker/es";
 
+const toDateString = (dateString) => {
+  if (!dateString) {
+    return undefined;
+  }
+  return moment(dateString).format().slice(0, 10);
+};
+
 class Bet extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      start_date: props.bet.start_date,
-      end_date: props.bet.end_date,
+      start_date: toDateString(props.bet.start_date),
+      end_date: toDateString(props.bet.end_date),
       value: props.bet.value,
       id: props.bet.id,
     };
@@ -19,21 +26,27 @@ class Bet extends Component {
   }
 
   changeStart(start_date) {
-    this.setState(
-      { start_date: start_date.format().slice(0, 10) },
-      this.update
-    );
+    this.setState({ start_date: toDateString(start_date) });
   }
 
   changeEnd(end_date) {
-    this.setState({ end_date: end_date.format().slice(0, 10) }, this.update);
+    this.setState({ end_date: toDateString(end_date) });
   }
 
   changeValue(event) {
-    this.setState({ value: event.target.value }, this.update);
+    this.setState({ value: event.target.value });
   }
 
   render() {
+    const hasChange =
+      this.state.start_date !== this.props.bet.start_date ||
+      this.state.end_date !== this.props.bet.end_date ||
+      this.state.value !== this.props.bet.value;
+
+    const isValidNewBet = this.state.start_date && this.state.value;
+
+    const canAdd = this.props.bet.id ? hasChange : isValidNewBet;
+
     const months = range(72).map((i) => {
       return moment.utc("2017-01-01").startOf("day").add(i, "months");
     });
@@ -80,18 +93,16 @@ class Bet extends Component {
           Betrag:
           <Input type="number" value={value} onChange={this.changeValue} />
         </label>
-        {this.props.bet.id ? (
-          <Button
-            onClick={() => this.props.deleteCallback(this.props.bet.id)}
-            content="Löschen"
-          />
-        ) : (
-          <Button
-            disabled={!(this.state.start_date && this.state.value)}
-            onClick={() => this.props.updateCallback(this.state)}
-            content="Hinzufügen"
-          />
-        )}
+        <Button
+          disabled={!canAdd}
+          onClick={() => this.props.updateCallback(this.state)}
+          content={this.props.bet.id ? "Aktualiseren" : "Hinzufügen"}
+        />
+        <Button
+          onClick={() => this.props.deleteCallback(this.props.bet.id)}
+          content="Löschen"
+          disabled={!this.props.bet.id}
+        />
       </div>
     );
   }

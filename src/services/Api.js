@@ -152,11 +152,27 @@ const deleteBet = (shareId, betId) => {
   });
 };
 
-const updateBet = (shareId, bet) => {
+const postBet = (shareId, bet) => {
   return fetchAuthenticated(`${BASE_URL}/shares/${shareId}/bets`, {
     method: "POST",
     body: JSON.stringify(bet),
   }).then((res) => res.json());
+};
+
+const putBet = (bet) => {
+  const { id, ...payload } = bet;
+  return fetchAuthenticated(`${BASE_URL}/bets/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  }).then((res) => res.json());
+};
+
+const updateBet = (shareId, bet) => {
+  console.log(bet);
+  if (bet.id) {
+    return putBet(bet);
+  }
+  return postBet(shareId, bet);
 };
 
 const patchMember = (memberId, updatedFields) => {
