@@ -1,13 +1,12 @@
 import AuthState from "./AuthState";
 import axios, { Axios } from "axios";
+import { Bet, Deposit } from "../models";
 
 const BASE_URL = process.env.REACT_APP_API || "http://localhost:5000/api/v1";
 const authState = new AuthState();
 
 // TODO: Define proper types
 type Share = any;
-type Deposit = any;
-type Bet = any;
 type Member = any;
 
 class Api {
@@ -85,15 +84,24 @@ class Api {
       .then((response) => response.data.share);
   }
 
-  updateDeposit(deposit: Deposit) {
+  patchShare(
+    shareId: number,
+    update: Partial<Pick<Share, "note" | "archived">>
+  ) {
     return this.client
-      .post(`/deposits/${deposit.id}`, deposit)
+      .patch(`/shares/${shareId}`, update)
+      .then((response) => response.data.share);
+  }
+
+  patchDeposit(id: number, deposit: Partial<Deposit>) {
+    return this.client
+      .patch(`/deposits/${id}`, deposit)
       .then((response) => response.data.deposit);
   }
 
-  addDeposit(deposit: Deposit) {
+  addDeposit(deposit: Partial<Deposit>): Promise<Deposit> {
     return this.client
-      .put(`/deposits/`, deposit)
+      .post(`/deposits/`, deposit)
       .then((response) => response.data.deposit);
   }
 
@@ -119,7 +127,6 @@ class Api {
       .then((response) => response.data);
   }
 
-  // TODO: Fix any
   getMembers(filters?: { active: boolean }) {
     return this.client
       .get("/members", {
@@ -139,7 +146,7 @@ class Api {
   };
 
   putBet(bet: Bet) {
-    const { id, ...payload } = bet;
+    const { id, share_id, ...payload } = bet;
     return this.client
       .put(`/bets/${id}`, payload)
       .then((response) => response.data);
