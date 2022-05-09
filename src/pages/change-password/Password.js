@@ -15,26 +15,32 @@ export default function PasswordChange() {
 
   const changePassword = () => {
     Api.changePassword(password)
-      .then(response => {
+      .then((response) => {
         if (response.ok) {
           toast.success("Passwort geändert");
         } else {
           throw response;
         }
       })
-      .catch(error => {
+      .catch((error) => {
         error
           .json()
-          .then(({ message }) => {
-            toast.error(message);
+          .then((json) => {
+            const error = json?.validation_error?.body_params?.[0];
+            if (error.type === "value_error.any_str.min_length") {
+              toast.error(`Das Passwort muss mindestens ${error?.ctx?.limit_value} Zeichen lang sein.
+                   Bitte ändere es und probiere es erneut.`);
+            } else {
+              throw new Error("unknown backend error");
+            }
           })
-          .catch(e => {
+          .catch((e) => {
             toast.error("Ein Fehler ist aufgetreten");
           });
       });
   };
 
-  const updateField = setter => event => setter(event.target.value);
+  const updateField = (setter) => (event) => setter(event.target.value);
 
   return (
     <Container>

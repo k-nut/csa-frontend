@@ -1,11 +1,10 @@
-import "./App.css";
 import "semantic-ui-css/semantic.min.css";
 import React from "react";
 import {
   BrowserRouter as Router,
   Route,
   NavLink,
-  Redirect
+  Redirect,
 } from "react-router-dom";
 import List from "./pages/payment-status-list/List";
 import Bets from "./pages/bets/Bets";
@@ -32,14 +31,14 @@ class SemanticNav extends React.Component {
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
-    render={props =>
+    render={(props) =>
       loggedIn() ? (
         <Component {...props} />
       ) : (
         <Redirect
           to={{
             pathname: "/login",
-            state: { from: props.location }
+            state: { from: props.location },
           }}
         />
       )

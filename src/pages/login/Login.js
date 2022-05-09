@@ -4,6 +4,15 @@ import { Form } from "semantic-ui-react";
 import Api from "../../services/Api";
 import toast from "../../components/Toast";
 import AuthState from "../../services/AuthState";
+import styled from "styled-components";
+
+const Container = styled.div`
+  padding: 10px;
+`;
+
+const LoginForm = styled(Form)`
+  max-width: 60ch !important;
+`;
 
 export default function Login({ history }) {
   const [email, setEmail] = useState("");
@@ -27,21 +36,23 @@ export default function Login({ history }) {
   };
 
   return (
-    <Form onSubmit={login}>
-      <Form.Input
-        label="E-Mail"
-        onChange={(event) => setEmail(event.target.value)}
-        value={email}
-      />
-      <Form.Input
-        label="Password"
-        type="password"
-        onChange={(event) => setPassword(event.target.value)}
-        value={password}
-      />
-      <Form.Button type="submit" loading={isLoading}>
-        Anmelden
-      </Form.Button>
-    </Form>
+    <Container>
+      <LoginForm onSubmit={login}>
+        <Form.Input
+          label="E-Mail"
+          onChange={(event) => setEmail(event.target.value)}
+          value={email}
+        />
+        <Form.Input
+          label="Password"
+          type="password"
+          onChange={(event) => setPassword(event.target.value)}
+          value={password}
+        />
+        <Form.Button type="submit" loading={isLoading}>
+          Anmelden
+        </Form.Button>
+      </LoginForm>
+    </Container>
   );
 }

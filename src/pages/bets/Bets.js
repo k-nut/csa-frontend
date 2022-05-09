@@ -18,7 +18,7 @@ class Bets extends Component {
       nameFilter: params.nameFilter,
       newShare: {},
       stations: [],
-      showArchived: params.showArchived
+      showArchived: params.showArchived,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -47,14 +47,14 @@ class Bets extends Component {
       ([shares, stations]) => {
         const keyedStations = keyById(stations);
 
-        const newShares = shares.map(share => {
+        const newShares = shares.map((share) => {
           share.station_name = keyedStations[share.station_id];
           return share;
         });
 
         this.setState({
           shares: newShares,
-          stations: _.sortBy(stations, "name")
+          stations: _.sortBy(stations, "name"),
         });
       }
     );
@@ -62,7 +62,7 @@ class Bets extends Component {
 
   changeExistingShare(share, property, value) {
     share[property] = value;
-    return Api.updateShare(share).then(updatedShare => {
+    return Api.updateShare(share).then((updatedShare) => {
       const newShares = _.cloneDeep(this.state.shares);
       const index = _.findIndex(newShares, share);
       newShares[index] = updatedShare;
@@ -80,7 +80,7 @@ class Bets extends Component {
       delete currentstate.showArchived;
     }
     this.props.history.replace({
-      search: `${queryString.stringify(currentstate)}`
+      search: `${queryString.stringify(currentstate)}`,
     });
   }
 
@@ -100,11 +100,11 @@ class Bets extends Component {
         share.start_date &&
         share.bet_value
       ) {
-        return Api.updateShare(share).then(updatedShare => {
+        return Api.updateShare(share).then((updatedShare) => {
           const newShares = this.state.shares.concat(updatedShare);
           this.setState({
             shares: newShares,
-            newShare: { name: "" }
+            newShare: { name: "" },
           });
           toast.success(`${updatedShare.name} erstellt!`, "", { timeOut: 500 });
         });
@@ -115,9 +115,9 @@ class Bets extends Component {
   render() {
     const shares = _.chain(this.state.shares)
       .filter(filterNameAndStation(this.state.nameFilter))
-      .filter(share => (this.state.showArchived ? true : !share.archived))
+      .filter((share) => (this.state.showArchived ? true : !share.archived))
       .sortBy(["station_id", "name"])
-      .map(share => {
+      .map((share) => {
         return (
           <Bet
             share={share}
@@ -156,13 +156,6 @@ class Bets extends Component {
           ) : (
             <Loader active inline="centered" />
           )}
-          <Table.Footer style={{ backgroundColor: "rgba(82, 189, 82, 0.21)" }}>
-            <Bet
-              share={this.state.newShare}
-              stations={this.state.stations}
-              changeProperty={this.changeProperty}
-            />
-          </Table.Footer>
         </Table>
       </div>
     );
