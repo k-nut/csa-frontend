@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Form, Header, Table } from "semantic-ui-react";
 import Api from "../services/Api";
-import { debounce, find, sortBy } from "lodash";
+import { debounce, sortBy } from "lodash";
 import "./ShareOverview.css";
 import "react-datepicker/dist/react-datepicker.css";
 import toast from "../components/Toast";
@@ -9,7 +9,7 @@ import MergeShare from "./MergeShare";
 import Bets from "./Bets";
 import SendEmail from "./SendEmail";
 import Deposit from "./Deposit";
-import EditDeposit from "./EditDeposit";
+import NewDeposit from "./NewDeposit";
 
 import styled from "styled-components";
 
@@ -23,15 +23,15 @@ class ShareOverview extends Component {
 
     this.state = {
       share: {},
-      deposits: []
+      deposits: [],
     };
   }
 
   componentDidMount() {
-    Api.getShare(this.props.match.params.id).then(share => {
+    Api.getShare(this.props.match.params.id).then((share) => {
       this.setState({ share });
     });
-    Api.getShareDeposits(this.props.match.params.id).then(deposits => {
+    Api.getShareDeposits(this.props.match.params.id).then((deposits) => {
       this.setState({ deposits });
     });
   }
@@ -40,31 +40,28 @@ class ShareOverview extends Component {
     const share = this.state.share;
     share.note = v.value;
     this.setState({ share: share });
-    this.sendUpdate(share);
+    this.sendUpdate(this.state.share.id, v.value);
   };
 
-  changeDeposit = (deposit, property, value) => {
-    const selectedDeposit = find(this.state.deposits, deposit);
-    selectedDeposit[property] = value;
-    this.setState({ deposits: this.state.deposits });
-    Api.updateDeposit(selectedDeposit);
+  changeDeposit = (id, changeSet) => {
+    this.setState({
+      deposits: this.state.deposits.map((deposit) =>
+        deposit.id === id ? { ...deposit, ...changeSet } : deposit
+      ),
+    });
+    Api.patchDeposit(id, changeSet);
   };
 
-  reloadDeposits = () => {
-    this.componentDidMount();
-  };
-
-  archive = () => {
-    Api.updateShare({
-      id: this.state.share.id,
-      archived: !this.state.share.archived
+  toggleArchivedState = () => {
+    Api.patchShare(this.state.share.id, {
+      archived: !this.state.share.archived,
     }).then(() => {
       this.props.history.push("/");
     });
   };
 
-  sendUpdate = debounce(share => {
-    Api.updateShare(share).then(() => {
+  sendUpdate = debounce((id, note) => {
+    Api.patchShare(id, { note }).then(() => {
       toast.success("Anteil aktualisiert", "", { timeOut: 500 });
     });
   }, 500);
@@ -72,12 +69,12 @@ class ShareOverview extends Component {
   render() {
     const deposits = sortBy(this.state.deposits, "timestamp")
       .reverse()
-      .map(deposit => {
+      .map((deposit) => {
         return (
           <Deposit
-            deposit={deposit}
             key={deposit.id}
-            changeFunction={this.changeDeposit}
+            deposit={deposit}
+            onChange={(changeSet) => this.changeDeposit(deposit.id, changeSet)}
           />
         );
       });
@@ -90,7 +87,7 @@ class ShareOverview extends Component {
           style={{
             display: "flex",
             justifyContent: "space-around",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <Form>
@@ -101,7 +98,7 @@ class ShareOverview extends Component {
             />
           </Form>
           <Button
-            onClick={this.archive}
+            onClick={this.toggleArchivedState}
             color="red"
             icon={this.state.share.archived ? "repeat" : "trash"}
             content={
@@ -123,10 +120,13 @@ class ShareOverview extends Component {
           <Table.Body>{deposits}</Table.Body>
           {this.state.deposits.length > 0 && (
             <Table.Footer>
-              <EditDeposit
-                personId={this.state.deposits[0].person_id}
+              <NewDeposit
                 personName={this.state.deposits[0].person_name}
-                updateFunction={this.reloadDeposits}
+                afterAdd={(newDeposit) =>
+                  this.setState({
+                    deposits: [...this.state.deposits, newDeposit],
+                  })
+                }
               />
             </Table.Footer>
           )}
