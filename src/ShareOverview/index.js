@@ -122,6 +122,7 @@ class ShareOverview extends Component {
             <Table.Footer>
               <NewDeposit
                 personName={this.state.deposits[0].person_name}
+                personId={this.state.deposits[0].person_id}
                 afterAdd={(newDeposit) =>
                   this.setState({
                     deposits: [...this.state.deposits, newDeposit],

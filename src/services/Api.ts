@@ -1,6 +1,6 @@
 import AuthState from "./AuthState";
 import axios, { Axios } from "axios";
-import { Bet, Deposit } from "../models";
+import { AddDeposit, Bet, Deposit } from "../models";
 
 const BASE_URL = process.env.REACT_APP_API || "http://localhost:5000/api/v1";
 const authState = new AuthState();
@@ -96,7 +96,7 @@ class Api {
       .then((response) => response.data.deposit);
   }
 
-  addDeposit(deposit: Partial<Deposit>): Promise<Deposit> {
+  addDeposit(deposit: AddDeposit): Promise<Deposit> {
     return this.client
       .post(`/deposits/`, deposit)
       .then((response) => response.data.deposit);

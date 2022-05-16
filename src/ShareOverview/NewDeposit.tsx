@@ -7,9 +7,14 @@ import { Deposit } from "../models";
 type NewDepositProps = {
   afterAdd: (deposit: Deposit) => void;
   personName: string;
+  personId: number;
 };
 
-export default function NewDeposit({ afterAdd, personName }: NewDepositProps) {
+export default function NewDeposit({
+  afterAdd,
+  personName,
+  personId,
+}: NewDepositProps) {
   const [timestamp, setTimestamp] = useState<Date | null>(new Date());
   const [title, setTitle] = useState("");
   const [ignore, setIgnore] = useState<boolean | undefined>(false);
@@ -25,11 +30,16 @@ export default function NewDeposit({ afterAdd, personName }: NewDepositProps) {
   };
 
   const submit = async () => {
+    // This should never happen, users cannot submit the form while there is no timestamp.
+    if (!timestamp) {
+      return;
+    }
     const newDeposit = await Api.addDeposit({
       amount,
       ignore,
       is_security: isSecurity,
-      timestamp: timestamp ? timestamp.toISOString() : undefined,
+      timestamp: timestamp.toISOString(),
+      person_id: personId,
       title,
     });
     afterAdd(newDeposit);
@@ -78,7 +88,7 @@ export default function NewDeposit({ afterAdd, personName }: NewDepositProps) {
         >
           {" "}
         </Checkbox>
-        <Button onClick={submit} disabled={!amount || !title}>
+        <Button onClick={submit} disabled={!amount || !title || !timestamp}>
           Hinzufügen
         </Button>
       </Table.Cell>

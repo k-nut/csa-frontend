@@ -1,13 +1,18 @@
-export type Deposit = {
+export interface AddDeposit {
   timestamp: string;
   amount: number;
   title: string;
   person_id: number;
+  ignore?: boolean;
+  is_security?: boolean;
+}
+
+export interface Deposit extends AddDeposit {
   ignore: boolean;
   is_security: boolean;
   person_name: string;
-  added_by_email: string;
-};
+  added_by_email?: string;
+}
 
 export interface NewBet {
   value: number;
