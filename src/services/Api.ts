@@ -38,11 +38,8 @@ class Api {
       (response) => response,
       (error) => {
         if (axios.isAxiosError(error)) {
-          console.log(error.response);
           if (error.response?.status === 401) {
-            console.log("clearing token");
             authState.clearToken();
-            return;
           }
         }
         return Promise.reject(error);
