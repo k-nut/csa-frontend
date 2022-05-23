@@ -1,12 +1,13 @@
-import AuthState from "./AuthState";
+import authState from "./AuthState";
 import axios, { Axios } from "axios";
 import { AddDeposit, Bet, Deposit } from "../models";
 
 const BASE_URL = process.env.REACT_APP_API || "http://localhost:5000/api/v1";
-const authState = new AuthState();
 
 // TODO: Define proper types
+// eslint-disable-next-line
 type Share = any;
+// eslint-disable-next-line
 type Member = any;
 
 class Api {
@@ -143,6 +144,7 @@ class Api {
   };
 
   putBet(bet: Bet) {
+    // eslint-disable-next-line
     const { id, share_id, ...payload } = bet;
     return this.client
       .put(`/bets/${id}`, payload)

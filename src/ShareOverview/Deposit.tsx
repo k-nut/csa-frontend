@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import { Checkbox, Icon, Label, Table } from "semantic-ui-react";
 import moment from "moment";
 import { Deposit } from "../models";
@@ -10,10 +10,10 @@ type DepositComponentProps = {
   onChange: (changeSet: ChangeSet) => void;
 };
 
-export default function DepositComponent({
+const DepositComponent: FunctionComponent<DepositComponentProps> = ({
   deposit,
   onChange,
-}: DepositComponentProps) {
+}) => {
   return (
     <Table.Row
       className={deposit.ignore || deposit.is_security ? "ignored" : ""}
@@ -44,4 +44,6 @@ export default function DepositComponent({
       </Table.Cell>
     </Table.Row>
   );
-}
+};
+
+export default DepositComponent;

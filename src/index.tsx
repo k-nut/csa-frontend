@@ -11,10 +11,3 @@ if (process.env.REACT_APP_SENTRY_DSN && process.env.NODE_ENV === "production") {
 }
 
 ReactDOM.render(<App />, rootEl);
-
-if (module.hot) {
-  module.hot.accept("./App", () => {
-    const NextApp = require("./App").default;
-    ReactDOM.render(<NextApp />, rootEl);
-  });
-}

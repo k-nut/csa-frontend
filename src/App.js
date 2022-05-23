@@ -1,5 +1,5 @@
 import "semantic-ui-css/semantic.min.css";
-import React from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -13,14 +13,8 @@ import { Menu } from "semantic-ui-react";
 import Login from "./pages/login/Login";
 import Members from "./pages/members/Members";
 import MemberList from "./pages/member-list/MemberList";
-import AuthState from "./services/AuthState";
 import PasswordChange from "./pages/change-password/Password";
-
-function loggedIn() {
-  const authState = new AuthState();
-  const token = authState.getToken();
-  return !!token;
-}
+import authState from "./services/AuthState";
 
 class SemanticNav extends React.Component {
   render() {
@@ -28,27 +22,31 @@ class SemanticNav extends React.Component {
   }
 }
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={(props) =>
-      loggedIn() ? (
-        <Component {...props} />
-      ) : (
+const PrivateRoute = (props) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(authState.isLoggedIn);
+
+  authState.onChange = () => {
+    setIsLoggedIn(authState.isLoggedIn);
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <Route>
         <Redirect
           to={{
             pathname: "/login",
             state: { from: props.location },
           }}
         />
-      )
-    }
-  />
-);
+      </Route>
+    );
+  }
+
+  return <Route {...props} />;
+};
 
 class Logout extends React.Component {
   componentDidMount() {
-    const authState = new AuthState();
     authState.clearToken();
     this.props.history.push("/");
   }

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, ReactNode } from "react";
 import { range } from "lodash";
 import moment from "moment";
 import { Button, Input } from "semantic-ui-react";
@@ -36,7 +36,7 @@ class BetComponent extends Component<BetProps, BetState> {
     };
   }
 
-  render() {
+  render(): ReactNode {
     const hasChange =
       !moment(this.state.startDate).isSame(this.props.bet.start_date, "day") ||
       !moment(this.state.endDate).isSame(this.props.bet.end_date, "day") ||
@@ -66,14 +66,14 @@ class BetComponent extends Component<BetProps, BetState> {
 
     const { startDate, endDate, value } = this.state;
 
-    const asAny = (object: any): any => object;
-
     const onSave = () => {
       this.props.updateCallback({
         id: this.props.bet.id,
         end_date: toDateString(this.state.endDate),
-        start_date: asAny(toDateString(this.state.startDate)),
-        value: asAny(this.state.value),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        start_date: toDateString(this.state.startDate)!,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        value: this.state.value!,
         share_id: this.props.bet.share_id,
       });
     };

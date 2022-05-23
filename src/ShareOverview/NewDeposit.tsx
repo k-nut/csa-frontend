@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import Api from "../services/Api";
 import DatePicker from "react-datepicker";
 import { Button, Checkbox, Input, Table } from "semantic-ui-react";
@@ -10,11 +10,11 @@ type NewDepositProps = {
   personId: number;
 };
 
-export default function NewDeposit({
+const NewDeposit: FunctionComponent<NewDepositProps> = ({
   afterAdd,
   personName,
   personId,
-}: NewDepositProps) {
+}) => {
   const [timestamp, setTimestamp] = useState<Date | null>(new Date());
   const [title, setTitle] = useState("");
   const [ignore, setIgnore] = useState<boolean | undefined>(false);
@@ -94,4 +94,6 @@ export default function NewDeposit({
       </Table.Cell>
     </Table.Row>
   );
-}
+};
+
+export default NewDeposit;
