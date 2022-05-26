@@ -4,6 +4,7 @@ import { Form } from "semantic-ui-react";
 import Api from "../../services/Api";
 import toast from "../../components/Toast";
 import styled from "styled-components";
+import { useLocation } from "react-router";
 
 const Container = styled.div`
   padding: 20px;
@@ -12,6 +13,8 @@ const Container = styled.div`
 export default function PasswordChange() {
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
+  const { search } = useLocation();
+  const urlParams = new URLSearchParams(search);
 
   const changePassword = () => {
     Api.changePassword(password)
@@ -42,12 +45,17 @@ export default function PasswordChange() {
 
   const updateField = (setter) => (event) => setter(event.target.value);
 
+  const mustChangeMessage =
+    "Du musst dein Passwort ändern, bevor du fortfahren kannst.";
+  const defaultMessage = "Hier kannst du dein Passwort ändern.";
+
   return (
     <Container>
       <p>
-        Hier kannst du dein Passwort ändern. Das neue Passwort muss mindestens
-        14 Zeichen lang sein.
+        {urlParams.has("mustChange") ? mustChangeMessage : defaultMessage}
+        Das neue Passwort muss mindestens 14 Zeichen lang sein.
       </p>
+      <p></p>
       <Form onSubmit={changePassword}>
         <Form.Input
           label="Neues Passwort"

@@ -42,6 +42,12 @@ class Api {
           if (error.response?.status === 401) {
             authState.clearToken();
           }
+          if (error.response?.status === 403) {
+            // Currently, the API only ever returns a 403 response if the user
+            // needs to change their password before they can interact with
+            // the endpoint.
+            authState.requirePasswordChange();
+          }
         }
         return Promise.reject(error);
       }
