@@ -34,7 +34,7 @@ export default function PasswordChange() {
               throw new Error("unknown backend error");
             }
           })
-          .catch((e) => {
+          .catch(() => {
             toast.error("Ein Fehler ist aufgetreten");
           });
       });

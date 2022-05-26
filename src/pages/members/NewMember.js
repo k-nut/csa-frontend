@@ -6,7 +6,7 @@ class NewMember extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      member: {}
+      member: {},
     };
     this.save = this.save.bind(this);
   }
@@ -18,12 +18,12 @@ class NewMember extends Component {
     this.setState({ member: { name: "", phone: "", email: "" } });
   }
 
-  updateMember(field, value, x) {
-    this.setState(prevState => ({
+  updateMember(field, value) {
+    this.setState((prevState) => ({
       member: {
         ...prevState.member,
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   }
 
@@ -34,19 +34,19 @@ class NewMember extends Component {
         <Table.Cell>
           <input
             value={member.name}
-            onChange={event => this.updateMember("name", event.target.value)}
+            onChange={(event) => this.updateMember("name", event.target.value)}
           />
         </Table.Cell>
         <Table.Cell>
           <input
             value={member.email}
-            onChange={event => this.updateMember("email", event.target.value)}
+            onChange={(event) => this.updateMember("email", event.target.value)}
           />
         </Table.Cell>
         <Table.Cell>
           <input
             value={member.phone}
-            onChange={event => this.updateMember("phone", event.target.value)}
+            onChange={(event) => this.updateMember("phone", event.target.value)}
           />
         </Table.Cell>
         <Table.Cell>

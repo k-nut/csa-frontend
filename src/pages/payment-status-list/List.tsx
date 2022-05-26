@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import _ from "lodash";
 import { Checkbox, Input, Loader, Table } from "semantic-ui-react";
 import Api from "../../services/Api";
@@ -6,6 +6,8 @@ import { filterNameAndStation } from "../../services/Utils";
 import { useHistory, useLocation } from "react-router";
 import { Share } from "./Share";
 
+// TODO: Replace with proper model
+// eslint-disable-next-line
 type ShareModel = any;
 
 // Taken from the react-router documentation
@@ -14,7 +16,7 @@ function useQuery() {
   return React.useMemo(() => new URLSearchParams(search), [search]);
 }
 
-function List() {
+const List: FunctionComponent = () => {
   const query = useQuery();
   const history = useHistory();
   const [shares, setShares] = useState<ShareModel[]>([]);
@@ -78,6 +80,7 @@ function List() {
           label="Archivierte anzeigen"
         />
       </div>
+      {/*// eslint-disable-next-line*/}
       {/*// @ts-ignore*/}
       <Table celled className="stickytable">
         <Table.Header>
@@ -105,6 +108,6 @@ function List() {
       </Table>
     </div>
   );
-}
+};
 
 export default List;

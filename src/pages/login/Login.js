@@ -3,7 +3,7 @@ import { Form } from "semantic-ui-react";
 
 import Api from "../../services/Api";
 import toast from "../../components/Toast";
-import AuthState from "../../services/AuthState";
+import authState from "../../services/AuthState";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -18,7 +18,6 @@ export default function Login({ history }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const authState = new AuthState();
 
   const login = () => {
     setIsLoading(true);
@@ -28,10 +27,8 @@ export default function Login({ history }) {
         history.push("/");
       })
       .catch(() => {
-        toast.error("Login fehlgeschlagen");
-      })
-      .finally(() => {
         setIsLoading(false);
+        toast.error("Login fehlgeschlagen");
       });
   };
 

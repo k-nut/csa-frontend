@@ -1,23 +1,27 @@
-// This uses the Singleton pattern to store the current state
-export default class AuthState {
-  static instance;
+class AuthState {
+  onChange?: () => Promise<void>;
 
   constructor() {
-    if (AuthState.instance) {
-      return AuthState.instance;
-    }
-
-    AuthState.instance = this;
+    this.clearToken = this.clearToken.bind(this);
+    this.getToken = this.getToken.bind(this);
   }
 
   clearToken() {
     localStorage.removeItem("authToken");
     localStorage.removeItem("authId");
+
+    this.onChange?.();
   }
 
-  setToken(token, id) {
+  setToken(token: string, id: string) {
     localStorage.setItem("authToken", token);
     localStorage.setItem("authId", id);
+
+    this.onChange?.();
+  }
+
+  get isLoggedIn() {
+    return Boolean(this.getToken());
   }
 
   getId() {
@@ -34,3 +38,5 @@ export default class AuthState {
     return token;
   }
 }
+
+export default new AuthState();
