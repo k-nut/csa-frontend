@@ -1,5 +1,6 @@
 class AuthState {
-  onChange?: () => Promise<void>;
+  onChange?: () => void;
+  needsPasswordChange = false;
 
   constructor() {
     this.clearToken = this.clearToken.bind(this);
@@ -17,6 +18,11 @@ class AuthState {
     localStorage.setItem("authToken", token);
     localStorage.setItem("authId", id);
 
+    this.onChange?.();
+  }
+
+  requirePasswordChange() {
+    this.needsPasswordChange = true;
     this.onChange?.();
   }
 
