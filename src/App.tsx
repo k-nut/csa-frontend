@@ -34,11 +34,14 @@ const PrivateRoute: FunctionComponent<RouteProps> = (props) => {
   const { pathname } = useLocation();
 
   const maybeRedirect = () => {
+    if (authState.loading) {
+      return false;
+    }
     if (!authState.isLoggedIn && pathname !== Routes.login) {
       history.push(Routes.login);
       return true;
     }
-    if (!authState.needsPasswordChange && pathname !== Routes.password) {
+    if (authState.needsPasswordChange && pathname !== Routes.password) {
       history.push(`${Routes.password}?mustChange=true`);
       return true;
     }
