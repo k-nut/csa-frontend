@@ -6,10 +6,8 @@ import { filterNameAndStation } from "../../services/Utils";
 import { useHistory, useLocation } from "react-router";
 import { Share } from "./Share";
 import { useQuery } from "@tanstack/react-query";
-
-// TODO: Replace with proper model
-// eslint-disable-next-line
-type ShareModel = any;
+import PaymentOverview from "./PaymentOverview";
+import styled from "styled-components";
 
 // Taken from the react-router documentation
 function useURlQuery() {
@@ -17,11 +15,19 @@ function useURlQuery() {
   return React.useMemo(() => new URLSearchParams(search), [search]);
 }
 
+const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 10px;
+`;
+
 const List: FunctionComponent = () => {
   const query = useURlQuery();
   const history = useHistory();
 
-  const shares = useQuery(["shares"], Api.getSharesPayments).data || [];
+  const { data, isLoading } = useQuery(["shares"], Api.getSharesPayments);
+  const shares = data || [];
 
   const updateUrl = (key: string, value: string | boolean | undefined) => {
     if (!value) {
@@ -55,31 +61,29 @@ const List: FunctionComponent = () => {
       return true;
     })
     .sortBy(["station_name", "name"])
-    .map((share) => {
-      return <Share share={share} key={share.id} />;
-    })
     .value();
   return (
     <div>
-      <div className="spaced">
-        <Input
-          value={query.get("name")}
-          onChange={(event) => updateUrl("name", event.target.value)}
-          placeholder="Filter..."
-        />
-        <Checkbox
-          checked={Boolean(query.get("filterProblems"))}
-          onChange={(_, data) => updateUrl("filterProblems", data.checked)}
-          label="Nur Fehlbeträge zeigen"
-        />
-        <Checkbox
-          checked={Boolean(query.get("showArchived"))}
-          onChange={(_, data) => updateUrl("showArchived", data.checked)}
-          label="Archivierte anzeigen"
-        />
-      </div>
-      {/*// eslint-disable-next-line*/}
-      {/*// @ts-ignore*/}
+      <HeaderRow>
+        <div className="spaced">
+          <Input
+            value={query.get("name")}
+            onChange={(event) => updateUrl("name", event.target.value)}
+            placeholder="Filter..."
+          />
+          <Checkbox
+            checked={Boolean(query.get("filterProblems"))}
+            onChange={(_, data) => updateUrl("filterProblems", data.checked)}
+            label="Nur Fehlbeträge zeigen"
+          />
+          <Checkbox
+            checked={Boolean(query.get("showArchived"))}
+            onChange={(_, data) => updateUrl("showArchived", data.checked)}
+            label="Archivierte anzeigen"
+          />
+        </div>
+        <PaymentOverview shares={filteredShares} />
+      </HeaderRow>
       <Table celled className="stickytable">
         <Table.Header>
           <Table.Row>
@@ -93,8 +97,10 @@ const List: FunctionComponent = () => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {filteredShares.length ? (
-            filteredShares
+          {!isLoading ? (
+            filteredShares.map((share) => (
+              <Share share={share} key={share.id} />
+            ))
           ) : (
             <Table.Row>
               <Table.Cell colSpan={7}>

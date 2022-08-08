@@ -4,9 +4,17 @@ import { AddDeposit, Bet, Deposit } from "../models";
 
 const BASE_URL = process.env.REACT_APP_API || "http://localhost:5000/api/v1";
 
-// TODO: Define proper types
-// eslint-disable-next-line
-type Share = any;
+export interface ShareModel {
+  archived: boolean;
+  difference_today: number;
+  expected_today: number;
+  id: number;
+  name: string;
+  note: string;
+  number_of_deposits: number;
+  station_name: string;
+  total_deposits: number;
+}
 // eslint-disable-next-line
 type Member = any;
 
@@ -70,7 +78,7 @@ class Api {
       .then((response) => response.data.deposits);
   };
 
-  getSharesPayments = () => {
+  getSharesPayments = (): Promise<ShareModel[]> => {
     return this.client
       .get(`/shares/payment_status`)
       .then((response) => response.data.shares);
@@ -82,7 +90,7 @@ class Api {
       .then((response) => response.data);
   };
 
-  updateShare = (share: Share) => {
+  updateShare = (share: ShareModel) => {
     return this.client
       .post(share.id ? `/shares/${share.id}` : `/shares`, share)
       .then((response) => response.data.share);
@@ -90,7 +98,7 @@ class Api {
 
   patchShare = (
     shareId: number,
-    update: Partial<Pick<Share, "note" | "archived">>
+    update: Partial<Pick<ShareModel, "note" | "archived">>
   ) => {
     return this.client
       .patch(`/shares/${shareId}`, update)

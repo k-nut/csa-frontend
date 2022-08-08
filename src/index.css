@@ -4,8 +4,14 @@ body {
   font-family: sans-serif;
 }
 
-.spaced > * {
-  margin-left: 30px !important;
+.spaced {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.ui.mini.statistics {
+  margin: 0;
 }
 
 .stickytable thead th {
