@@ -1,29 +1,27 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent } from "react";
 import _ from "lodash";
 import { Checkbox, Input, Loader, Table } from "semantic-ui-react";
 import Api from "../../services/Api";
 import { filterNameAndStation } from "../../services/Utils";
 import { useHistory, useLocation } from "react-router";
 import { Share } from "./Share";
+import { useQuery } from "@tanstack/react-query";
 
 // TODO: Replace with proper model
 // eslint-disable-next-line
 type ShareModel = any;
 
 // Taken from the react-router documentation
-function useQuery() {
+function useURlQuery() {
   const { search } = useLocation();
   return React.useMemo(() => new URLSearchParams(search), [search]);
 }
 
 const List: FunctionComponent = () => {
-  const query = useQuery();
+  const query = useURlQuery();
   const history = useHistory();
-  const [shares, setShares] = useState<ShareModel[]>([]);
 
-  useEffect(() => {
-    Api.getSharesPayments().then(setShares);
-  }, []);
+  const shares = useQuery(["shares"], Api.getSharesPayments).data || [];
 
   const updateUrl = (key: string, value: string | boolean | undefined) => {
     if (!value) {

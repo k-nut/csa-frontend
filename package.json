@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@sentry/browser": "^7.1.1",
+    "@tanstack/react-query": "^4.0.10",
+    "@tanstack/react-query-devtools": "4.0.5",
     "axios": "^0.27.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
