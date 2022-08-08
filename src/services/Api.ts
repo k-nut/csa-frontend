@@ -54,90 +54,90 @@ class Api {
     );
   }
 
-  getShares() {
+  getShares = () => {
     return this.client.get("/shares").then((response) => response.data.shares);
-  }
+  };
 
-  getShare(id: string) {
+  getShare = (id: string) => {
     return this.client
       .get(`/shares/${id}`)
       .then((response) => response.data.share);
-  }
+  };
 
-  getShareDeposits(id: string) {
+  getShareDeposits = (id: string) => {
     return this.client
       .get(`/shares/${id}/deposits`)
       .then((response) => response.data.deposits);
-  }
+  };
 
-  getSharesPayments() {
+  getSharesPayments = () => {
     return this.client
       .get(`/shares/payment_status`)
       .then((response) => response.data.shares);
-  }
+  };
 
-  login(email: string, password: string) {
+  login = (email: string, password: string) => {
     return this.client
       .post("/login", { email, password }, { headers: undefined })
       .then((response) => response.data);
-  }
+  };
 
-  updateShare(share: Share) {
+  updateShare = (share: Share) => {
     return this.client
       .post(share.id ? `/shares/${share.id}` : `/shares`, share)
       .then((response) => response.data.share);
-  }
+  };
 
-  patchShare(
+  patchShare = (
     shareId: number,
     update: Partial<Pick<Share, "note" | "archived">>
-  ) {
+  ) => {
     return this.client
       .patch(`/shares/${shareId}`, update)
       .then((response) => response.data.share);
-  }
+  };
 
-  patchDeposit(id: number, deposit: Partial<Deposit>) {
+  patchDeposit = (id: number, deposit: Partial<Deposit>) => {
     return this.client
       .patch(`/deposits/${id}`, deposit)
       .then((response) => response.data.deposit);
-  }
+  };
 
-  addDeposit(deposit: AddDeposit): Promise<Deposit> {
+  addDeposit = (deposit: AddDeposit): Promise<Deposit> => {
     return this.client
       .post(`/deposits/`, deposit)
       .then((response) => response.data.deposit);
-  }
+  };
 
-  getStations() {
+  getStations = () => {
     return this.client
       .get(`/stations`)
       .then((response) => response.data.stations);
-  }
+  };
 
-  getUserEmails() {
+  getUserEmails = () => {
     return this.client.get(`/users`).then((response) => response.data);
-  }
+  };
 
-  getShareEmails(shareId: number) {
+  getShareEmails = (shareId: number) => {
     return this.client
       .get(`/shares/${shareId}/emails`)
       .then((response) => response.data);
-  }
+  };
 
-  getBets(shareId: number) {
+  getBets = (shareId: number) => {
     return this.client
       .get(`/shares/${shareId}/bets`)
       .then((response) => response.data);
-  }
+  };
 
-  getMembers(filters?: { active: boolean }) {
+  getMembers = (filters?: { active: boolean }) => {
     return this.client
       .get("/members", {
         params: filters,
       })
       .then((response) => response.data);
-  }
+  };
 
   deleteBet = (shareId: number, betId: number) => {
     return this.client.delete(`/shares/${shareId}/bets/${betId}`);
@@ -149,13 +149,13 @@ class Api {
       .then((response) => response.data);
   };
 
-  putBet(bet: Bet) {
+  putBet = (bet: Bet) => {
     // eslint-disable-next-line
     const { id, share_id, ...payload } = bet;
     return this.client
       .put(`/bets/${id}`, payload)
       .then((response) => response.data);
-  }
+  };
 
   updateBet = (shareId: number, bet: Bet) => {
     if (bet.id) {
@@ -170,25 +170,25 @@ class Api {
       .then((response) => response.data);
   };
 
-  deleteMember(memberId: number) {
+  deleteMember = (memberId: number) => {
     return this.client.delete(`/members/${memberId}`);
-  }
+  };
 
-  createMember(member: Member) {
+  createMember = (member: Member) => {
     return this.client.post(`/members`, member);
-  }
+  };
 
-  mergeShares(share1: number, share2: number) {
+  mergeShares = (share1: number, share2: number) => {
     return this.client
       .post(`/shares/merge`, { share1, share2 })
       .then((response) => response.data);
-  }
+  };
 
   // TODO: Change to `PUT /users/${userId}/password`
-  changePassword(password: string) {
+  changePassword = (password: string) => {
     const userId = authState.getId();
     return this.client.patch(`/users/${userId}`, { password });
-  }
+  };
 
   // TODO: Move to AuthSate or AuthService and have it called from there
   logout() {
