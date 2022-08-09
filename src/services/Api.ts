@@ -133,10 +133,10 @@ class Api {
       .then((response) => response.data);
   };
 
-  getBets = (shareId: number) => {
+  getBets = (shareId: number): Promise<Bet[]> => {
     return this.client
       .get(`/shares/${shareId}/bets`)
-      .then((response) => response.data);
+      .then((response) => response.data.bets);
   };
 
   getMembers = (filters?: { active: boolean }) => {
