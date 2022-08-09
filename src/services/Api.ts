@@ -152,8 +152,10 @@ class Api {
   };
 
   postBet = (shareId: number, bet: Bet) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { share_id, ...payload } = bet;
     return this.client
-      .post(`/shares/${shareId}/bets`, bet)
+      .post(`/shares/${shareId}/bets`, payload)
       .then((response) => response.data);
   };
 
