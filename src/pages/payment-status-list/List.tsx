@@ -87,12 +87,11 @@ const List: FunctionComponent = () => {
       <Table celled className="stickytable">
         <Table.Header>
           <Table.Row>
+            <Table.HeaderCell> ID </Table.HeaderCell>
             <Table.HeaderCell> Namen </Table.HeaderCell>
             <Table.HeaderCell> Notiz </Table.HeaderCell>
             <Table.HeaderCell> Abholstelle </Table.HeaderCell>
             <Table.HeaderCell> Zahlungen </Table.HeaderCell>
-            <Table.HeaderCell> Erwartet </Table.HeaderCell>
-            <Table.HeaderCell> Kontostand </Table.HeaderCell>
             <Table.HeaderCell> Differenz </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
