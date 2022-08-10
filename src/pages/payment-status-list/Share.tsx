@@ -15,7 +15,9 @@ export const Share: FunctionComponent<ShareProps> = ({ share }) => {
           {share.name || <i> Unbenannter Anteil </i>}
         </Link>
       </Table.Cell>
-      <Table.Cell> {share.note} </Table.Cell>
+      <Table.Cell>
+        <div style={{ whiteSpace: "pre-wrap" }}>{share.note}</div>
+      </Table.Cell>
       <Table.Cell> {share.station_name} </Table.Cell>
       <Table.Cell> {share.number_of_deposits} </Table.Cell>
       <Table.Cell> {share.expected_today} </Table.Cell>
