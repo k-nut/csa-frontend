@@ -106,6 +106,14 @@ class ShareOverview extends Component {
             }
           />
         </div>
+
+        {this.state.share.id && (
+          <div>
+            <Header>Gebote</Header>
+            <Bets shareId={this.state.share.id} />
+          </div>
+        )}
+
         <Table celled>
           <Table.Header>
             <Table.Row>
@@ -132,13 +140,6 @@ class ShareOverview extends Component {
             </Table.Footer>
           )}
         </Table>
-
-        {this.state.share.id && (
-          <div>
-            <Header>Gebote</Header>
-            <Bets shareId={this.state.share.id} />
-          </div>
-        )}
 
         {this.state.share.id && (
           <div>

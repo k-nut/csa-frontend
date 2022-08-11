@@ -17,6 +17,8 @@ import MemberList from "./pages/member-list/MemberList";
 import PasswordChange from "./pages/change-password/Password";
 import authState from "./services/AuthState";
 import { Switch, useHistory, useLocation } from "react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const SemanticNav: FunctionComponent<NavLinkProps> = (props) => (
   <NavLink {...props} exact className="item" />
@@ -63,35 +65,40 @@ const Logout: FunctionComponent = () => {
   return <div>Logging out...</div>;
 };
 
+const queryClient = new QueryClient();
+
 const App: FunctionComponent = () => (
-  <Router>
-    <div>
-      <Menu widths="4">
-        <SemanticNav to="/">Übersicht</SemanticNav>
-        <SemanticNav to="/bets">Gebote</SemanticNav>
-        <SemanticNav to="/members">Mitglieder</SemanticNav>
-        <SemanticNav to="/logout">Abmelden</SemanticNav>
-      </Menu>
+  <QueryClientProvider client={queryClient}>
+    <Router>
+      <div>
+        <Menu widths="4">
+          <SemanticNav to="/">Übersicht</SemanticNav>
+          <SemanticNav to="/bets">Gebote</SemanticNav>
+          <SemanticNav to="/members">Mitglieder</SemanticNav>
+          <SemanticNav to="/logout">Abmelden</SemanticNav>
+        </Menu>
 
-      <main>
-        <Switch>
-          <Route exact path={Routes.login} component={Login} />
-          <Route exact path={Routes.logout} component={Logout} />
+        <main>
+          <Switch>
+            <Route exact path={Routes.login} component={Login} />
+            <Route exact path={Routes.logout} component={Logout} />
 
-          <PrivateRoute exact path={Routes.root} component={List} />
-          <PrivateRoute exact path="/bets" component={Bets} />
-          <PrivateRoute exact path="/members" component={Members} />
-          <PrivateRoute exact path="/member-list" component={MemberList} />
-          <PrivateRoute exact path="/share/:id" component={ShareOverview} />
-          <PrivateRoute
-            exact
-            path={Routes.password}
-            component={PasswordChange}
-          />
-        </Switch>
-      </main>
-    </div>
-  </Router>
+            <PrivateRoute exact path={Routes.root} component={List} />
+            <PrivateRoute exact path="/bets" component={Bets} />
+            <PrivateRoute exact path="/members" component={Members} />
+            <PrivateRoute exact path="/member-list" component={MemberList} />
+            <PrivateRoute exact path="/share/:id" component={ShareOverview} />
+            <PrivateRoute
+              exact
+              path={Routes.password}
+              component={PasswordChange}
+            />
+          </Switch>
+        </main>
+      </div>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </Router>
+  </QueryClientProvider>
 );
 
 export default App;
