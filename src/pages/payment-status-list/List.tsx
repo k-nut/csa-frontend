@@ -3,17 +3,11 @@ import _ from "lodash";
 import { Checkbox, Input, Loader, Table } from "semantic-ui-react";
 import Api from "../../services/Api";
 import { filterNameAndStation } from "../../services/Utils";
-import { useHistory, useLocation } from "react-router";
 import { Share } from "./Share";
 import { useQuery } from "@tanstack/react-query";
 import PaymentOverview from "./PaymentOverview";
 import styled from "styled-components";
-
-// Taken from the react-router documentation
-function useURlQuery() {
-  const { search } = useLocation();
-  return React.useMemo(() => new URLSearchParams(search), [search]);
-}
+import { BooleanParam, StringParam, useQueryParam } from "use-query-params";
 
 const HeaderRow = styled.div`
   display: flex;
@@ -23,39 +17,29 @@ const HeaderRow = styled.div`
 `;
 
 const List: FunctionComponent = () => {
-  const query = useURlQuery();
-  const history = useHistory();
-
   const { data, isLoading } = useQuery(["shares"], Api.getSharesPayments);
   const shares = data || [];
 
-  const updateUrl = (key: string, value: string | boolean | undefined) => {
-    if (!value) {
-      query.delete(key);
-    } else if (typeof value === "boolean") {
-      if (value) {
-        query.set(key, "true");
-      } else {
-        query.delete(key);
-      }
-    } else {
-      query.set(key, value);
-    }
-    history.replace({
-      search: query.toString(),
-    });
-  };
+  const [nameFilter, setNameFilter] = useQueryParam("name", StringParam);
+  const [filterProblems, setFilterProblems] = useQueryParam(
+    "filterProblems",
+    BooleanParam
+  );
+  const [showArchived, setShowArchived] = useQueryParam(
+    "showArchived",
+    BooleanParam
+  );
 
   const filteredShares = _.chain(shares)
-    .filter(filterNameAndStation(query.get("name")))
+    .filter(filterNameAndStation(nameFilter))
     .filter((share) => {
-      if (query.get("filterProblems")) {
+      if (filterProblems) {
         return share.difference_today < 0;
       }
       return true;
     })
     .filter((share) => {
-      if (!query.get("showArchived")) {
+      if (!showArchived) {
         return !share.archived;
       }
       return true;
@@ -67,18 +51,18 @@ const List: FunctionComponent = () => {
       <HeaderRow>
         <div className="spaced">
           <Input
-            value={query.get("name")}
-            onChange={(event) => updateUrl("name", event.target.value)}
+            value={nameFilter}
+            onChange={(event) => setNameFilter(event.target.value)}
             placeholder="Filter..."
           />
           <Checkbox
-            checked={Boolean(query.get("filterProblems"))}
-            onChange={(_, data) => updateUrl("filterProblems", data.checked)}
+            checked={Boolean(filterProblems)}
+            onChange={(_, data) => setFilterProblems(data.checked)}
             label="Nur Fehlbeträge zeigen"
           />
           <Checkbox
-            checked={Boolean(query.get("showArchived"))}
-            onChange={(_, data) => updateUrl("showArchived", data.checked)}
+            checked={Boolean(showArchived)}
+            onChange={(_, data) => setShowArchived(data.checked)}
             label="Archivierte anzeigen"
           />
         </div>
