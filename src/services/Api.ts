@@ -14,6 +14,7 @@ export interface ShareModel {
   number_of_deposits: number;
   station_name: string;
   total_deposits: number;
+  total_security: number;
 }
 // eslint-disable-next-line
 type Member = any;
