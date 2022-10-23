@@ -91,6 +91,7 @@ const List: FunctionComponent = () => {
             <Table.HeaderCell> Namen </Table.HeaderCell>
             <Table.HeaderCell> Notiz </Table.HeaderCell>
             <Table.HeaderCell> Abholstelle </Table.HeaderCell>
+            <Table.HeaderCell> Kautionssume </Table.HeaderCell>
             <Table.HeaderCell> Zahlungen </Table.HeaderCell>
             <Table.HeaderCell> Differenz </Table.HeaderCell>
           </Table.Row>
