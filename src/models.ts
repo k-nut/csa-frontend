@@ -8,6 +8,7 @@ export interface AddDeposit {
 }
 
 export interface Deposit extends AddDeposit {
+  id: number;
   ignore: boolean;
   is_security: boolean;
   person_name: string;
