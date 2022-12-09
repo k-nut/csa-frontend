@@ -56,16 +56,16 @@ const BetComponent: FunctionComponent<BetProps> = ({ bet, shareId }) => {
 
   const canAdd = bet.id ? hasChange : isValidNewBet;
 
-  const months = range(72).map((i) => {
+  const months = range(12 * 10).map((i) => {
     return moment.utc("2017-01-01").startOf("day").add(i, "months").toDate();
   });
 
-  const halfMonths = range(72).map((i) => {
+  const halfMonths = range(12 * 10).map((i) => {
     return moment.utc("2017-01-15").startOf("day").add(i, "months").toDate();
   });
   const startDates = [...months, ...halfMonths];
 
-  const endMonths = range(72).map((i) => {
+  const endMonths = range(12 * 10).map((i) => {
     return moment
       .utc("2017-01-01")
       .add(i, "months")
