@@ -22,7 +22,6 @@ const PasswordChange: FunctionComponent = () => {
       .then(() => toast.success("Passwort geändert"))
       .catch((e) => {
         if (axios.isAxiosError(e)) {
-          // @ts-ignore
           const error = e.response?.data?.validation_error?.body_params?.[0];
           if (error.type === "value_error.any_str.min_length") {
             toast.error(`Das Passwort muss mindestens ${error?.ctx?.limit_value} Zeichen lang sein.
