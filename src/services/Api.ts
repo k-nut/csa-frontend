@@ -73,7 +73,7 @@ class Api {
       .then((response) => response.data.share);
   };
 
-  getShareDeposits = (id: string) => {
+  getShareDeposits = (id: string): Promise<Deposit[]> => {
     return this.client
       .get(`/shares/${id}/deposits`)
       .then((response) => response.data.deposits);
