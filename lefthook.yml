@@ -1,0 +1,6 @@
+ jre-commit:
+   parallel: true
+   commands:
+     prettier:
+       glob: "*.{js,json,css,md}"
+       run: npx prettier --write {staged_files}
