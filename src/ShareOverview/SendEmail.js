@@ -21,17 +21,17 @@ class SendEmail extends Component {
 
   makeCC = () => {
     const ccAddresses = this.state.users
-      .filter(user => user.selected)
-      .map(user => user.email);
+      .filter((user) => user.selected)
+      .map((user) => user.email);
     return "&cc=" + ccAddresses.join(",");
   };
 
-  selectUser = toggleUser => {
+  selectUser = (toggleUser) => {
     this.setState({
-      users: this.state.users.map(user => {
+      users: this.state.users.map((user) => {
         user.selected = user === toggleUser ? !user.selected : user.selected;
         return user;
-      })
+      }),
     });
   };
 
@@ -39,15 +39,19 @@ class SendEmail extends Component {
     super();
     this.state = {
       users: [],
-      shareEmails: []
+      shareEmails: [],
     };
   }
 
   componentDidMount() {
-    Api.getUserEmails().then(response =>
-      this.setState({ users: response.users })
+    Api.getUserEmails().then((response) =>
+      this.setState({
+        users: response.users.map((email) => ({
+          email,
+        })),
+      })
     );
-    Api.getShareEmails(this.props.share.id).then(response =>
+    Api.getShareEmails(this.props.share.id).then((response) =>
       this.setState({ shareEmails: response.emails })
     );
   }
@@ -63,7 +67,7 @@ class SendEmail extends Component {
       );
     }
 
-    const userList = this.state.users.map(user => {
+    const userList = this.state.users.map((user) => {
       return (
         <Checkbox
           style={{ display: "block" }}
