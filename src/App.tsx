@@ -96,7 +96,9 @@ const App: FunctionComponent = () => (
           </Switch>
         </main>
       </div>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {process.env.NODE_ENV === "development" && (
+        <ReactQueryDevtools initialIsOpen={false} />
+      )}
     </Router>
   </QueryClientProvider>
 );
