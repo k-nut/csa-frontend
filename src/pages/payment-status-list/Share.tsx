@@ -2,11 +2,11 @@ import { Table } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import React, { FunctionComponent } from "react";
 import { ShareModel } from "../../services/Api";
+import { EXPECTED_SECURITY } from "../../settings";
 
 interface ShareProps {
   share: ShareModel;
 }
-const EXPECTED_SECURITY = 120;
 
 const state = (difference: number): "negative" | "positive" | "warning" => {
   if (difference < 0) {
