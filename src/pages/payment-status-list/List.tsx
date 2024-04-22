@@ -50,7 +50,7 @@ const List: FunctionComponent = () => {
     .filter(filterNameAndStation(query.get("name")))
     .filter((share) => {
       if (query.get("filterProblems")) {
-        return share.difference_today < 0;
+        return share.difference_today !== 0;
       }
       return true;
     })
