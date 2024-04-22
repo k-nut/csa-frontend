@@ -8,8 +8,17 @@ interface ShareProps {
 }
 const EXPECTED_SECURITY = 120;
 
+const state = (difference: number): "negative" | "positive" | "warning" => {
+  if (difference < 0) {
+    return "negative";
+  }
+  if (difference > 0) {
+    return "warning";
+  }
+  return "positive";
+};
+
 export const Share: FunctionComponent<ShareProps> = ({ share }) => {
-  const state = share.difference_today < 0 ? "negative" : "positive";
   const securityState =
     share.total_security === EXPECTED_SECURITY ? "positive" : "negative";
   return (
@@ -26,7 +35,9 @@ export const Share: FunctionComponent<ShareProps> = ({ share }) => {
       <Table.Cell> {share.station_name} </Table.Cell>
       <Table.Cell className={securityState}>{share.total_security} </Table.Cell>
       <Table.Cell> {share.number_of_deposits}</Table.Cell>
-      <Table.Cell className={state}>{share.difference_today}</Table.Cell>
+      <Table.Cell className={state(share.difference_today)}>
+        {share.difference_today}
+      </Table.Cell>
     </Table.Row>
   );
 };
