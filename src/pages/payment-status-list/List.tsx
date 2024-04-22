@@ -8,6 +8,7 @@ import { Share } from "./Share";
 import { useQuery } from "@tanstack/react-query";
 import PaymentOverview from "./PaymentOverview";
 import styled from "styled-components";
+import { EXPECTED_SECURITY } from "../../settings";
 
 // Taken from the react-router documentation
 function useURlQuery() {
@@ -60,6 +61,12 @@ const List: FunctionComponent = () => {
       }
       return true;
     })
+    .filter((share) => {
+      if (query.get("showSecurityProblems")) {
+        return share.total_security !== EXPECTED_SECURITY;
+      }
+      return true;
+    })
     .sortBy(["station_name", "name"])
     .value();
   return (
@@ -75,6 +82,13 @@ const List: FunctionComponent = () => {
             checked={Boolean(query.get("filterProblems"))}
             onChange={(_, data) => updateUrl("filterProblems", data.checked)}
             label="Nur Fehlbeträge zeigen"
+          />
+          <Checkbox
+            checked={Boolean(query.get("showSecurityProblems"))}
+            onChange={(_, data) =>
+              updateUrl("showSecurityProblems", data.checked)
+            }
+            label="Nur falsche Kautionen"
           />
           <Checkbox
             checked={Boolean(query.get("showArchived"))}
