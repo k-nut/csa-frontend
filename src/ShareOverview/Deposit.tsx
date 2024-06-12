@@ -3,7 +3,7 @@ import { Checkbox, Icon, Label, Table } from "semantic-ui-react";
 import moment from "moment";
 import { Deposit } from "../models";
 
-type ChangeSet = Partial<Pick<Deposit, "ignore" | "is_security">>;
+export type ChangeSet = Partial<Pick<Deposit, "ignore" | "is_security">>;
 
 type DepositComponentProps = {
   deposit: Deposit;

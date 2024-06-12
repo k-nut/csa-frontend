@@ -2,16 +2,16 @@ import React, { FunctionComponent, useState } from "react";
 import Api from "../services/Api";
 import DatePicker from "react-datepicker";
 import { Button, Checkbox, Input, Table } from "semantic-ui-react";
-import { Deposit } from "../models";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type NewDepositProps = {
-  afterAdd: (deposit: Deposit) => void;
+  queryKey: string[];
   personName: string;
   personId: number;
 };
 
 const NewDeposit: FunctionComponent<NewDepositProps> = ({
-  afterAdd,
+  queryKey,
   personName,
   personId,
 }) => {
@@ -29,22 +29,29 @@ const NewDeposit: FunctionComponent<NewDepositProps> = ({
     setIsSecurity(false);
   };
 
-  const submit = async () => {
-    // This should never happen, users cannot submit the form while there is no timestamp.
-    if (!timestamp) {
-      return;
+  const queryClient = useQueryClient();
+  const mutation = useMutation(
+    async () => {
+      // This should never happen, users cannot submit the form while there is no timestamp.
+      if (!timestamp) {
+        return;
+      }
+      return Api.addDeposit({
+        amount,
+        ignore,
+        is_security: isSecurity,
+        timestamp: timestamp.toISOString(),
+        person_id: personId,
+        title,
+      });
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(queryKey);
+        resetState();
+      },
     }
-    const newDeposit = await Api.addDeposit({
-      amount,
-      ignore,
-      is_security: isSecurity,
-      timestamp: timestamp.toISOString(),
-      person_id: personId,
-      title,
-    });
-    afterAdd(newDeposit);
-    resetState();
-  };
+  );
 
   return (
     <Table.Row>
@@ -88,7 +95,10 @@ const NewDeposit: FunctionComponent<NewDepositProps> = ({
         >
           {" "}
         </Checkbox>
-        <Button onClick={submit} disabled={!amount || !title || !timestamp}>
+        <Button
+          onClick={() => mutation.mutate()}
+          disabled={!amount || !title || !timestamp}
+        >
           Hinzufügen
         </Button>
       </Table.Cell>

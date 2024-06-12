@@ -1,17 +1,16 @@
 import React, { Component } from "react";
 import { Button, Form, Header, Table } from "semantic-ui-react";
 import Api from "../services/Api";
-import { debounce, sortBy } from "lodash";
+import { debounce } from "lodash";
 import "./ShareOverview.css";
 import "react-datepicker/dist/react-datepicker.css";
 import toast from "../components/Toast";
 import MergeShare from "./MergeShare";
 import Bets from "./Bets";
 import SendEmail from "./SendEmail";
-import Deposit from "./Deposit";
-import NewDeposit from "./NewDeposit";
 
 import styled from "styled-components";
+import Deposits from "./Deposits";
 
 const Container = styled.div`
   padding: 20px;
@@ -23,16 +22,12 @@ class ShareOverview extends Component {
 
     this.state = {
       share: {},
-      deposits: [],
     };
   }
 
   componentDidMount() {
     Api.getShare(this.props.match.params.id).then((share) => {
       this.setState({ share });
-    });
-    Api.getShareDeposits(this.props.match.params.id).then((deposits) => {
-      this.setState({ deposits });
     });
   }
 
@@ -41,15 +36,6 @@ class ShareOverview extends Component {
     share.note = v.value;
     this.setState({ share: share });
     this.sendUpdate(this.state.share.id, v.value);
-  };
-
-  changeDeposit = (id, changeSet) => {
-    this.setState({
-      deposits: this.state.deposits.map((deposit) =>
-        deposit.id === id ? { ...deposit, ...changeSet } : deposit
-      ),
-    });
-    Api.patchDeposit(id, changeSet);
   };
 
   toggleArchivedState = () => {
@@ -67,18 +53,6 @@ class ShareOverview extends Component {
   }, 500);
 
   render() {
-    const deposits = sortBy(this.state.deposits, "timestamp")
-      .reverse()
-      .map((deposit) => {
-        return (
-          <Deposit
-            key={deposit.id}
-            deposit={deposit}
-            onChange={(changeSet) => this.changeDeposit(deposit.id, changeSet)}
-          />
-        );
-      });
-
     return (
       <Container>
         <Header> {this.state.share.name} </Header>
@@ -125,20 +99,7 @@ class ShareOverview extends Component {
               <Table.HeaderCell> Kaution </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
-          <Table.Body>{deposits}</Table.Body>
-          {this.state.deposits.length > 0 && (
-            <Table.Footer>
-              <NewDeposit
-                personName={this.state.deposits[0].person_name}
-                personId={this.state.deposits[0].person_id}
-                afterAdd={(newDeposit) =>
-                  this.setState({
-                    deposits: [...this.state.deposits, newDeposit],
-                  })
-                }
-              />
-            </Table.Footer>
-          )}
+          <Deposits shareId={this.props.match.params.id} />
         </Table>
 
         {this.state.share.id && (
