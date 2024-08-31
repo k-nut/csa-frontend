@@ -6,10 +6,10 @@ The backend is [csa-share-management](https://github.com/k-nut/csa-share-managem
 
 ## Setup
 
-Install all dependencies using yarn
+Install all dependencies 
 
 ```bash
-yarn
+npm install
 ```
 
 ## Running the app
@@ -19,7 +19,7 @@ So to run against a backend at `api.example.org`, run:
 
 ```bash
 export REACT_APP_API=https://api.example.org
-yarn start
+npm run start
 ```
 
 ## Further documentation
