@@ -5,7 +5,6 @@ import Api from "../../services/Api";
 import toast from "../../components/Toast";
 import styled from "styled-components";
 import { useHistory, useLocation } from "react-router";
-import axios from "axios";
 import authState from "../../services/AuthState";
 
 const Container = styled.div`
@@ -20,24 +19,16 @@ const PasswordChange: FunctionComponent = () => {
   const urlParams = new URLSearchParams(search);
 
   const changePassword = async () => {
-    try {
-      await Api.changePassword(password);
+    const response = await Api.changePassword(password);
+    if (!response.ok) {
+      const { error } = response;
+      toast.error(`Das Passwort muss mindestens ${error.value} Zeichen lang sein.
+                   Bitte ändere es und probiere es erneut.`);
+    } else {
       toast.success("Passwort geändert");
       if (urlParams.has("mustChange")) {
         authState.needsPasswordChange = false;
         history.push("/");
-      }
-    } catch (e) {
-      if (axios.isAxiosError(e)) {
-        const error = e.response?.data?.validation_error?.body_params?.[0];
-        if (error.type === "value_error.any_str.min_length") {
-          toast.error(`Das Passwort muss mindestens ${error?.ctx?.limit_value} Zeichen lang sein.
-                   Bitte ändere es und probiere es erneut.`);
-        } else {
-          throw new Error("unknown backend error");
-        }
-      } else {
-        toast.error("Ein Fehler ist aufgetreten");
       }
     }
   };
