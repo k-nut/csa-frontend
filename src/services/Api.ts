@@ -1,5 +1,4 @@
 import authState from "./AuthState";
-import axios, { Axios } from "axios";
 import { AddDeposit, Bet, Deposit } from "../models";
 
 const BASE_URL = process.env.REACT_APP_API || "http://localhost:5000/api/v1";
@@ -20,147 +19,149 @@ export interface ShareModel {
 type Member = any;
 
 class Api {
-  client: Axios;
+  private async request<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<T> {
+    const token = authState.getToken();
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    };
 
-  constructor() {
-    this.client = axios.create({
-      baseURL: BASE_URL,
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+      ...options,
+      headers,
     });
 
-    this.client.interceptors.request.use(
-      (config) => {
-        const token = authState.getToken();
-        if (!token) {
-          return config;
-        }
-        config.headers["Authorization"] = `Bearer ${token}`;
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
+    if (response.status === 401) {
+      authState.clearToken();
+    } else if (response.status === 403) {
+      // Currently, the API only ever returns a 403 response if the user
+      // needs to change their password before they can interact with
+      // the endpoint.
+      authState.requirePasswordChange();
+    }
 
-    this.client.interceptors.response.use(
-      (response) => response,
-      (error) => {
-        if (axios.isAxiosError(error)) {
-          if (error.response?.status === 401) {
-            authState.clearToken();
-          }
-          if (error.response?.status === 403) {
-            // Currently, the API only ever returns a 403 response if the user
-            // needs to change their password before they can interact with
-            // the endpoint.
-            authState.requirePasswordChange();
-          }
-        }
-        return Promise.reject(error);
-      }
-    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
   }
 
   getShares = () => {
-    return this.client.get("/shares").then((response) => response.data.shares);
+    return this.request<{ shares: ShareModel[] }>("/shares").then(
+      (data) => data.shares
+    );
   };
 
   getShare = (id: string) => {
-    return this.client
-      .get(`/shares/${id}`)
-      .then((response) => response.data.share);
+    return this.request<{ share: ShareModel }>(`/shares/${id}`).then(
+      (data) => data.share
+    );
   };
 
   getShareDeposits = (id: string) => {
-    return this.client
-      .get(`/shares/${id}/deposits`)
-      .then((response) => response.data.deposits);
+    return this.request<{ deposits: Deposit[] }>(`/shares/${id}/deposits`).then(
+      (data) => data.deposits
+    );
   };
 
   getSharesPayments = (): Promise<ShareModel[]> => {
-    return this.client
-      .get(`/shares/payment_status`)
-      .then((response) => response.data.shares);
+    return this.request<{ shares: ShareModel[] }>(
+      "/shares/payment_status"
+    ).then((data) => data.shares);
   };
 
   login = (email: string, password: string) => {
-    return this.client
-      .post("/login", { email, password }, { headers: undefined })
-      .then((response) => response.data);
+    return this.request("/login", {
+      method: "POST",
+      headers: {},
+      body: JSON.stringify({ email, password }),
+    });
   };
 
   updateShare = (share: ShareModel) => {
-    return this.client
-      .post(share.id ? `/shares/${share.id}` : `/shares`, share)
-      .then((response) => response.data.share);
+    const endpoint = share.id ? `/shares/${share.id}` : "/shares";
+    return this.request<{ share: ShareModel }>(endpoint, {
+      method: "POST",
+      body: JSON.stringify(share),
+    }).then((data) => data.share);
   };
 
   patchShare = (
     shareId: number,
     update: Partial<Pick<ShareModel, "note" | "archived">>
   ) => {
-    return this.client
-      .patch(`/shares/${shareId}`, update)
-      .then((response) => response.data.share);
+    return this.request<{ share: ShareModel }>(`/shares/${shareId}`, {
+      method: "PATCH",
+      body: JSON.stringify(update),
+    }).then((data) => data.share);
   };
 
   patchDeposit = (id: number, deposit: Partial<Deposit>) => {
-    return this.client
-      .patch(`/deposits/${id}`, deposit)
-      .then((response) => response.data.deposit);
+    return this.request<{ deposit: Deposit }>(`/deposits/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(deposit),
+    }).then((data) => data.deposit);
   };
 
   addDeposit = (deposit: AddDeposit): Promise<Deposit> => {
-    return this.client
-      .post(`/deposits/`, deposit)
-      .then((response) => response.data.deposit);
+    return this.request<{ deposit: Deposit }>("/deposits/", {
+      method: "POST",
+      body: JSON.stringify(deposit),
+    }).then((data) => data.deposit);
   };
 
   getStations = () => {
-    return this.client
-      .get(`/stations`)
-      .then((response) => response.data.stations);
+    return this.request<{ stations: any[] }>("/stations").then(
+      (data) => data.stations
+    );
   };
 
   getUserEmails = () => {
-    return this.client.get(`/users`).then((response) => response.data);
+    return this.request("/users");
   };
 
   getShareEmails = (shareId: number) => {
-    return this.client
-      .get(`/shares/${shareId}/emails`)
-      .then((response) => response.data);
+    return this.request(`/shares/${shareId}/emails`);
   };
 
   getBets = (shareId: number): Promise<Bet[]> => {
-    return this.client
-      .get(`/shares/${shareId}/bets`)
-      .then((response) => response.data.bets);
+    return this.request<{ bets: Bet[] }>(`/shares/${shareId}/bets`).then(
+      (data) => data.bets
+    );
   };
 
   getMembers = (filters?: { active: boolean }) => {
-    return this.client
-      .get("/members", {
-        params: filters,
-      })
-      .then((response) => response.data);
+    const queryParams = filters
+      ? `?${new URLSearchParams(filters as any)}`
+      : "";
+    return this.request(`/members${queryParams}`);
   };
 
   deleteBet = (shareId: number, betId: number) => {
-    return this.client.delete(`/shares/${shareId}/bets/${betId}`);
+    return this.request(`/shares/${shareId}/bets/${betId}`, {
+      method: "DELETE",
+    });
   };
 
   postBet = (shareId: number, bet: Bet) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { share_id, ...payload } = bet;
-    return this.client
-      .post(`/shares/${shareId}/bets`, payload)
-      .then((response) => response.data);
+    return this.request(`/shares/${shareId}/bets`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
   };
 
   putBet = (bet: Bet) => {
-    // eslint-disable-next-line
     const { id, share_id, ...payload } = bet;
-    return this.client
-      .put(`/bets/${id}`, payload)
-      .then((response) => response.data);
+    return this.request(`/bets/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    });
   };
 
   updateBet = (shareId: number, bet: Bet) => {
@@ -171,29 +172,39 @@ class Api {
   };
 
   patchMember = (memberId: number, updatedFields: Partial<Member>) => {
-    return this.client
-      .patch(`/members/${memberId}`, updatedFields)
-      .then((response) => response.data);
+    return this.request(`/members/${memberId}`, {
+      method: "PATCH",
+      body: JSON.stringify(updatedFields),
+    });
   };
 
   deleteMember = (memberId: number) => {
-    return this.client.delete(`/members/${memberId}`);
+    return this.request(`/members/${memberId}`, {
+      method: "DELETE",
+    });
   };
 
   createMember = (member: Member) => {
-    return this.client.post(`/members`, member);
+    return this.request("/members", {
+      method: "POST",
+      body: JSON.stringify(member),
+    });
   };
 
   mergeShares = (share1: number, share2: number) => {
-    return this.client
-      .post(`/shares/merge`, { share1, share2 })
-      .then((response) => response.data);
+    return this.request("/shares/merge", {
+      method: "POST",
+      body: JSON.stringify({ share1, share2 }),
+    });
   };
 
   // TODO: Change to `PUT /users/${userId}/password`
   changePassword = (password: string) => {
     const userId = authState.getId();
-    return this.client.patch(`/users/${userId}`, { password });
+    return this.request(`/users/${userId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ password }),
+    });
   };
 
   // TODO: Move to AuthSate or AuthService and have it called from there
