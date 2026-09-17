@@ -5,20 +5,19 @@ import { Checkbox, Input, Loader, Table } from "semantic-ui-react";
 import Api from "../../services/Api";
 import toast from "../../components/Toast";
 import { filterNameAndStation } from "../../services/Utils";
-import * as queryString from "query-string";
 import { Bet } from "./Bet";
 
 class Bets extends Component {
   constructor(props) {
     super(props);
-    const params = queryString.parse(props.location.search);
+    const params = new URLSearchParams(props.location.search);
 
     this.state = {
       shares: [],
-      nameFilter: params.nameFilter,
+      nameFilter: params.get("nameFilter") || "",
       newShare: {},
       stations: [],
-      showArchived: params.showArchived,
+      showArchived: Boolean(params.get("showArchived")),
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -72,15 +71,19 @@ class Bets extends Component {
   }
 
   syncState() {
-    const currentstate = queryString.parse(this.props.location.search);
-    currentstate.nameFilter = this.state.nameFilter;
-    if (this.state.showArchived) {
-      currentstate.showArchived = this.state.showArchived;
+    const params = new URLSearchParams(this.props.location.search);
+    if (this.state.nameFilter) {
+      params.set("nameFilter", this.state.nameFilter);
     } else {
-      delete currentstate.showArchived;
+      params.delete("nameFilter");
+    }
+    if (this.state.showArchived) {
+      params.set("showArchived", "true");
+    } else {
+      params.delete("showArchived");
     }
     this.props.history.replace({
-      search: `${queryString.stringify(currentstate)}`,
+      search: params.toString(),
     });
   }
 
