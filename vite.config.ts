@@ -137,7 +137,7 @@ function basePlugin(): Plugin {
     config(_, { mode }) {
       const { PUBLIC_URL } = loadEnv(mode, ".", ["PUBLIC_URL"]);
       return {
-        base: PUBLIC_URL || "",
+        base: PUBLIC_URL || "/",
       };
     },
   };
